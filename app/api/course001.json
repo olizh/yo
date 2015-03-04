@@ -1,0 +1,17 @@
+{
+  "id": "001",
+  "title": "商务",
+  "image": "",
+  "content": {
+    "page1": {
+      "title": "第一页",
+      "question": "这是什么问题",
+      "rightanswer": "第一个",
+      "wronganswer": [
+        "第二个",
+        "第三个",
+        "第四个"
+      ]
+    }
+  }
+}

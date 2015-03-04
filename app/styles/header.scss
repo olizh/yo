@@ -1,0 +1,40 @@
+
+.n-header {
+	height: $headerHeight;
+	width: 100%;
+	position:absolute;
+}
+.n-header__container {
+	background:$themeBG;
+}
+.n-header__primary {
+	height: $headerHeight;
+	line-height: $headerHeight;
+	position:relative;
+	text-align:center;
+	color:#FFFFFF;
+}
+.n-header__side {
+	position: absolute;
+	width: $sideButtonWidth;
+	height: $headerHeight;
+	top: 0;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.n-header__left {
+	left: 0;
+	background-image: url(../images/ic_menu_24px.svg);
+}
+.n-header__right {
+	right: 0; 
+	background-image: url(../images/ic_settings_24px.svg);
+}
+.is-in-swift {
+	.n-header {
+		height: $headerHeight + $statusBarHeight;
+	}
+	.n-header__container {
+		padding-top: $statusBarHeight;
+	}
+}

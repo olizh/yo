@@ -1,0 +1,11 @@
+{
+  "name": "yo",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "modernizr": "~2.8.1",
+    "o-grid": "~3.0.0",
+    "fastclick": "~1.0.6",
+    "ftscroller": "~0.6.0"
+  }
+}

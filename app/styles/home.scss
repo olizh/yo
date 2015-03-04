@@ -1,0 +1,113 @@
+
+// nested style is not recommended as it bloats the output code
+
+// the content full body
+.n-content-container {
+	width:100%;
+	max-width: 1280px;
+	position: absolute;
+	margin: auto;
+	top: $headerHeight;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+}
+.n-content-scroller {
+	width: 100%;
+	height: 100%;
+	.clearfloat {
+		display: none;
+	}
+}
+
+// one course block
+.n-home-course-container {
+	position: relative;
+}
+
+.n-home-course-container:after {
+	padding-top: $homeCoursePicRatio;
+	// 16:9 ratio
+	display: block;
+	content: '';
+}
+
+.n-home-course-inner {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	color: white;
+	background-color: $placeHolderBG;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	background-size: 100% auto;
+	border-bottom: $gutterWidth solid $defaultBG;
+}
+.n-home-course-inner:after {
+	content: '';
+	height: 100%;
+	width: 100%;
+	position: absolute; 
+}
+.n-home-course-green:after {
+	@include background-image (linear-gradient(225deg, rgba(#002F4b, 0), rgba(#417711, 0.7)));
+}
+.n-home-course-title {
+  	position: absolute;
+  	left:0;
+  	bottom:0;
+  	font-size: 1.1em;
+  	line-height: 161.8%;
+  	padding: 0 14px 0 14px;
+  	text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  	color: #FFF;
+  	z-index: 2;
+}
+
+
+.is-in-swift {
+	.n-content-container {
+		top: $headerHeight + $statusBarHeight;
+	}
+}
+
+@media only screen and (min-width: 490px) and (max-width: 729px) {
+	@import "grid-layout/s-brick.scss";
+}
+
+@media only screen and (min-width: 490px) {
+	.n-home-course-container {
+		float: left;
+		width: 50%;
+	}
+	.n-home-course-inner {
+		border: $gutterWidth solid $defaultBG;
+	}
+	.n-content-inner {
+		padding: $gutterWidth;
+	}
+}
+
+
+@media only screen and (min-width: 730px) and (max-width: 969px) {
+	@import "grid-layout/m-verge.scss";
+}
+
+@media only screen and (min-width: 730px) {
+	.n-home-course-container {
+		width: 33.33333333%;
+	}
+}
+
+@media only screen and (min-width: 970px) {
+	@import "grid-layout/l-verge.scss";
+}
+
+@media only screen and (min-width: 1210px) {
+	.n-home-course-container {
+		
+	}
+}

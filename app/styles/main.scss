@@ -1,0 +1,28 @@
+// variables
+@import "variables.scss";
+
+//mixins
+@import "mixins.scss";
+
+// Base Styles
+@import "base.scss";
+
+// animation
+@import "animate.scss";
+@import "animate-more.scss";
+
+// start screen
+@import "startscreen.scss";
+
+// header
+@import "header.scss";
+
+// home page
+@import "home.scss";
+
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
