@@ -36,7 +36,19 @@
 		document.getElementById('n-course-inner').innerHTML = '';
 		document.getElementById('n-header-title').innerHTML = courseTitle;
 		$.get(apiUrl, function(data) {
-			
+			var courseHTML = '';
+			courseHTML = '<div class="n-page">' + data.lead + '</div>';
+			$.each(data.content, function(entryIndex, entry) {
+				var pageTitle = '';
+				var pageMain = '';
+				var pageOption = '';
+				if (entry.pageType === 'quiz') {
+					pageTitle = '<div class="n-page-title">' + entry.title + '</div>';
+					pageMain = '<div class="n-page-main">' + entry.question + '</div>'; 
+					courseHTML += '<div class="n-page">' + pageTitle + pageMain + pageOption + '</div>';
+				}
+			});
+			document.getElementById('n-course-inner').innerHTML = courseHTML;
 		});
 	}
 
