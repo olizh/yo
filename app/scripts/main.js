@@ -45,6 +45,11 @@
 				if (entry.pageType === 'quiz') {
 					pageTitle = '<div class="n-page-title">' + entry.title + '</div>';
 					pageMain = '<div class="n-page-main">' + entry.question + '</div>'; 
+					pageOption = '<div class="n-option" value=1>' + entry.rightanswer + '</div>';
+					$.each(entry.wronganswer, function(itemIndex, item) {
+						pageOption += '<div class="n-option">' + item + '</div>';
+					});
+					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
 					courseHTML += '<div class="n-page">' + pageTitle + pageMain + pageOption + '</div>';
 				}
 			});
