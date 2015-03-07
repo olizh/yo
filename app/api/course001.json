@@ -2,9 +2,11 @@
   "id": "001",
   "title": "商务",
   "image": "",
-  "content": {
-    "page1": {
+  "lead": "描述",
+  "content": [
+    {
       "title": "第一页",
+      "pageType": "quiz",
       "question": "这是什么问题",
       "rightanswer": "第一个",
       "wronganswer": [
@@ -12,6 +14,28 @@
         "第三个",
         "第四个"
       ]
+    },
+    {
+      "title": "第二页",
+      "pageType": "quiz",
+      "question": "这是什么问题2",
+      "rightanswer": "第一个",
+      "wronganswer": [
+        "第二个",
+        "第三个",
+        "第四个"
+      ]
+    },
+    {
+      "title": "第三页",
+      "pageType": "quiz",
+      "question": "这是什么问题3",
+      "rightanswer": "第一个",
+      "wronganswer": [
+        "第二个",
+        "第三个",
+        "第四个"
+      ]
     }
-  }
+  ]
 }
