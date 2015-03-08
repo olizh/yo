@@ -2,7 +2,7 @@
 // nested style is not recommended as it bloats the output code
 
 // the content full body
-.n-content-container, .n-course-container {
+.n-content-container, .n-course-container, .n-page {
 	width:100%;
 	max-width: 1280px;
 	position: absolute;
@@ -25,11 +25,9 @@
 .n-content-container {
 	@include transform(translate3d(0, 0, 0));
 }
-.n-course-container {
-	@include transform(translate3d(100%, 0, 0));
-	background-color: red;
-}
 
+
+// in the course
 .n-in-course {
 	.n-content-container {
 		@include transform(translate3d(-100%, 0, 0));
@@ -38,6 +36,52 @@
 		@include transform(translate3d(0, 0, 0));
 	}
 }
+
+.n-course-container {
+	@include transform(translate3d(100%, 0, 0));
+	.n-course-inner, .n-page-inner {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: hidden;
+	}
+	.n-page {
+		top: 0;
+		display:none;
+		padding-bottom: 2 * $padding + $buttonHeight; 
+		overflow: hidden;
+	}
+	.n-page.n-page-on, .n-page.n-page-next, .n-page.n-page-prev {
+		display:block;
+	}
+	.n-page.n-page-next {
+		@include transform(translate3d(100%, 0, 0));
+	}
+	.n-page.n-page-prev {
+		@include transform(translate3d(-100%, 0, 0));
+	}
+	.n-course-button-container {
+		position: absolute;
+		bottom: 0;
+		height: 2 * $padding + $buttonHeight;
+		width: 100%;
+		margin: 0 auto;
+		text-align: center;
+	}
+	.n-course-button {
+		font-size: 16px;
+		color: white;
+		background-color: $themeBG;
+		min-width: 285px;
+		max-width: 350px;
+		width: 90%;
+		height: $buttonHeight;
+		margin-top: $padding; 
+		border-color: transparent;
+	}
+}
+
+
 
 // one course block
 .n-home-course-container {

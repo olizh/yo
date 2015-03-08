@@ -29,3 +29,18 @@ a, a:link, a:visited, a:active, a:hover {
 	clear:both;
 	display:block;
 }
+div {
+  line-height: 161.8%;
+}
+button {
+    outline: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    @include transition (background-color .3s);
+    @include appearance (none);
+    @include user-select (none);
+}

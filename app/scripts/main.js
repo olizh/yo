@@ -32,12 +32,13 @@
 	function openCourse(courseId, courseTitle) {
 		var id = courseId.replace(/^.*\/course\//g, '');
 		var apiUrl = 'api/course' + id + '.json'; 
-		document.body.className = 'n-in-course';
 		document.getElementById('n-course-inner').innerHTML = '';
 		document.getElementById('n-header-title').innerHTML = courseTitle;
+		document.getElementById('n-course-button').innerHTML = '开始';
+		document.body.className = 'n-in-course';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
-			courseHTML = '<div class="n-page">' + data.lead + '</div>';
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + data.lead + '</div></div>';
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
 				var pageMain = '';
@@ -50,9 +51,10 @@
 						pageOption += '<div class="n-option">' + item + '</div>';
 					});
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
-					courseHTML += '<div class="n-page">' + pageTitle + pageMain + pageOption + '</div>';
+					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '</div></div>';
 				}
 			});
+			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>'
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 		});
 	}
@@ -106,7 +108,5 @@
 	        },1000);
     	}
     });
-
-
 
 })(); 
