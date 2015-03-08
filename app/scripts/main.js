@@ -15,6 +15,12 @@
 
 	var appTitle = '商学院';
 
+	var courseStatus = {
+		action: 'next',
+		length: 0,
+		current: 0
+	};
+
 	// if url has isInSWIFT
 	// display extra 20px 
 	// at the top for native app status bar
@@ -38,7 +44,14 @@
 		document.body.className = 'n-in-course';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
-			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + data.lead + '</div></div>';
+			var courseImage = '';
+			courseStatus.length = 0;
+			if (data.image && data.image !== '') {
+				//courseImage = '<img src="' + data.image +'">';
+				courseImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + data.image + ')"></div></div>';
+			}
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + '</div></div></div>';
+			courseStatus.length += 1;
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
 				var pageMain = '';
@@ -53,13 +66,39 @@
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
 					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '</div></div>';
 				}
+				courseStatus.length += 1;
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>';
+			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 		});
 	}
 
-	// bring out left and right menu
+	function openPage(page) {
+		$('#n-course-inner .n-page').removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
+		$('#n-course-inner .n-page').eq(courseStatus.current).addClass('n-page-on');
+		if (courseStatus.current > 0) {
+			$('#n-course-inner .n-page').eq(courseStatus.current - 1).addClass('n-page-prev');	
+		}
+		if (courseStatus.current === courseStatus.length -1) {
+			$('#n-course-inner .n-page').eq(0).addClass('n-page-next');
+		} else if (courseStatus.current < courseStatus.length -1) {
+			$('#n-course-inner .n-page').eq(courseStatus.current + 1).addClass('n-page-next');
+		}
+	}
+
+	function courseAction(action) {
+		if (action === 'next') {
+			if (courseStatus.current === courseStatus.length -1) {//last page
+				courseStatus.current = 0;
+			} else if (courseStatus.current < courseStatus.length -1) {
+				courseStatus.current += 1; 
+			}
+			openPage(courseStatus.current);
+		}
+	}
+
+	// back function
 	$('body').on('click', '.n-header__back', function(){
 		document.body.className = '';
 		document.getElementById('n-header-title').innerHTML = appTitle; 
@@ -69,6 +108,10 @@
 	$('body').on('click', '.n-course-link', function(){
 		openCourse(this.href, this.title);
 		return false;
+	});
+
+	$('body').on('click', '#n-course-button', function(){
+		courseAction(courseStatus.action);
 	});
 
 	// get JSON data for home page
