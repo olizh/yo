@@ -54,7 +54,7 @@
 					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '</div></div>';
 				}
 			});
-			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>'
+			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>';
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 		});
 	}
