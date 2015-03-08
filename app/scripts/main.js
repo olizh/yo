@@ -18,7 +18,9 @@
 	var courseStatus = {
 		action: 'next',
 		length: 0,
-		current: 0
+		current: 0,
+		button: '开始',
+		buttonDisable: false
 	};
 
 	// if url has isInSWIFT
@@ -71,6 +73,7 @@
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>';
 			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
+			openPage(0);
 		});
 	}
 
@@ -78,8 +81,11 @@
 		$('#n-course-inner .n-page').removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
 		$('#n-course-inner .n-page').eq(courseStatus.current).addClass('n-page-on');
 		if (courseStatus.current > 0) {
-			$('#n-course-inner .n-page').eq(courseStatus.current - 1).addClass('n-page-prev');	
-		}
+			$('#n-course-inner .n-page').eq(courseStatus.current - 1).addClass('n-page-prev');
+		} else if (courseStatus.current === 0) {
+			$('#n-course-inner .n-page').eq(courseStatus.length-1).addClass('n-page-prev');
+		} 
+
 		if (courseStatus.current === courseStatus.length -1) {
 			$('#n-course-inner .n-page').eq(0).addClass('n-page-next');
 		} else if (courseStatus.current < courseStatus.length -1) {
