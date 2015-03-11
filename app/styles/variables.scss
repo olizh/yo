@@ -4,6 +4,9 @@ $defaultColor: #333333;
 $themeBG: #16a085;
 $placeHolderBG: #95a5a6;
 $lighterThemeBG: #2ecc71;
+$borderColor: #EFEFEF;
+$selectedBG: #777;
+$disabledBG: #777;
 
 // width, height and padding
 $headerHeight: 44px;
@@ -12,10 +15,13 @@ $buttonHeight: 36px;
 $sideButtonWidth: 52px;
 $gutterWidth: 5px;
 $padding: 14px;
+$maxWidth: 1280px;
+$optionIconWidth: 18px; 
 
 // Percentages
 $defaultLineHeight: 168.1%;
 $homeCoursePicRatio: percentage(9/16);
 
 // Font Sizes
-$h1FontSize: 1.618em; 
+$h1FontSize: 1.2em;
+$h3FontSize: 1em;

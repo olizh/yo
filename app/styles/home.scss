@@ -12,7 +12,7 @@
 	left: 0;
 	right: 0;
 	overflow: hidden;
-	@include transition(all 0.5s ease-in);
+	@include transition(all 0.5s ease-in-out);
 	@include backface-visibility(hidden);
 }
 .n-content-scroller {
@@ -60,11 +60,16 @@
 	.n-page.n-page-prev {
 		@include transform(translate3d(-100%, 0, 0));
 	}
-	h1.n-page-title {
+	.n-page-title {
 		line-height: $defaultLineHeight;
 		margin: 0;
 		padding: 0 $padding;
+	}
+	h1.n-page-title {
 		font-size: $h1FontSize;
+	}
+	h3.n-page-title {
+		font-size: $h3FontSize;
 	}
 	.n-page-lead {
 		padding: 0 $padding; 
@@ -72,6 +77,40 @@
 	.n-home-course-inner {
 		border-bottom-width: 0;
 		background-color: transparent;
+	}
+	.n-option:first-child {
+		border-width: 0;
+	}
+	.n-option {
+		border-top: 1px solid $borderColor;
+		padding: $padding $padding $padding $optionIconWidth + 2 * $padding;
+		background-repeat: no-repeat;
+		background-position: $padding center;
+		background-image: url(../images/ic_radio_button_off_24px.svg);
+		background-size: $optionIconWidth $optionIconWidth;
+		cursor: pointer;
+	}
+	.n-option.selected {
+		background-color: $selectedBG;
+		color: white;
+		background-image: url(../images/ic_radio_button_on_24px.svg);
+	}
+	.n-option.is-correct {
+		background-color: $lighterThemeBG;
+		color: white;
+		background-image: url(../images/ic_radio_white_24px.svg);	
+	}
+	.n-option.selected.is-correct {
+		background-color: $lighterThemeBG;
+		background-size: 48px 48px;
+		background-position: 0 center;
+		background-image: url(../images/ic_check_24px.svg);	
+	}
+	.n-option.selected.is-wrong {
+		background-color: red;
+		background-size: 48px 48px;
+		background-position: 0 center;
+		background-image: url(../images/ic_close_24px.svg);	
 	}
 	.n-course-button-container {
 		position: absolute;
@@ -91,6 +130,10 @@
 		height: $buttonHeight;
 		margin-top: $padding; 
 		border-color: transparent;
+	}
+	.n-course-button.disabled {
+		opacity: 0.5;
+		background-color: $disabledBG;
 	}
 }
 

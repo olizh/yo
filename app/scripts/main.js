@@ -20,7 +20,9 @@
 		length: 0,
 		current: 0,
 		button: '开始',
-		buttonDisable: false
+		buttonDisable: false,
+		score: 0,
+		fullScore: 0
 	};
 
 	// if url has isInSWIFT
@@ -48,6 +50,8 @@
 			var courseHTML = '';
 			var courseImage = '';
 			courseStatus.length = 0;
+			courseStatus.score = 0;
+			courseStatus.fullScore = 0; 
 			if (data.image && data.image !== '') {
 				//courseImage = '<img src="' + data.image +'">';
 				courseImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + data.image + ')"></div></div>';
@@ -59,9 +63,10 @@
 				var pageMain = '';
 				var pageOption = '';
 				if (entry.pageType === 'quiz') {
-					pageTitle = '<div class="n-page-title">' + entry.title + '</div>';
-					pageMain = '<div class="n-page-main">' + entry.question + '</div>'; 
+					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
+					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
 					pageOption = '<div class="n-option" value=1>' + entry.rightanswer + '</div>';
+					courseStatus.fullScore += 1;
 					$.each(entry.wronganswer, function(itemIndex, item) {
 						pageOption += '<div class="n-option">' + item + '</div>';
 					});
@@ -78,22 +83,40 @@
 	}
 
 	function openPage(page) {
-		$('#n-course-inner .n-page').removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
-		$('#n-course-inner .n-page').eq(courseStatus.current).addClass('n-page-on');
-		if (courseStatus.current > 0) {
-			$('#n-course-inner .n-page').eq(courseStatus.current - 1).addClass('n-page-prev');
+		var allPages = $('#n-course-inner .n-page');
+		var currentPage = allPages.eq(page);
+		var courseButton = $('#n-course-button');
+		courseStatus.current = page;
+		allPages.removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
+		currentPage.addClass('n-page-on');
+		if (page > 0) {
+			allPages.eq(courseStatus.current - 1).addClass('n-page-prev');
 		} else if (courseStatus.current === 0) {
-			$('#n-course-inner .n-page').eq(courseStatus.length-1).addClass('n-page-prev');
-		} 
+			allPages.eq(courseStatus.length-1).addClass('n-page-prev');
+		}
 
-		if (courseStatus.current === courseStatus.length -1) {
-			$('#n-course-inner .n-page').eq(0).addClass('n-page-next');
+		if (page === courseStatus.length -1) {
+			allPages.eq(0).addClass('n-page-next');
+			courseButton.html('重温');
 		} else if (courseStatus.current < courseStatus.length -1) {
-			$('#n-course-inner .n-page').eq(courseStatus.current + 1).addClass('n-page-next');
+			allPages.eq(courseStatus.current + 1).addClass('n-page-next');
+		}
+
+		if (currentPage.hasClass('n-page-quiz') === true) {
+			courseButton.html('确定');
+			courseButton.addClass('disabled');
+			courseStatus.buttonDisable === true; 
+		} else {
+			courseButton.removeClass('disabled');
+			courseStatus.buttonDisable === false; 
 		}
 	}
 
 	function courseAction(action) {
+		if (courseStatus.buttonDisable === true) {
+			return;
+		}
+		var currentPage = $('.n-page').eq(courseStatus.current);
 		if (action === 'next') {
 			if (courseStatus.current === courseStatus.length -1) {//last page
 				courseStatus.current = 0;
@@ -101,6 +124,16 @@
 				courseStatus.current += 1; 
 			}
 			openPage(courseStatus.current);
+		} else if (action === 'confirm') {
+			if (currentPage.find('.n-option.selected').attr('value') >= 1) {
+				courseStatus.score += 1; 
+				currentPage.find('.n-option.selected').addClass('is-correct').addClass('tada').addClass('animated').addClass('running');
+			} else {
+				currentPage.find('.n-option.selected').addClass('is-wrong').addClass('shake').addClass('animated').addClass('running');
+				currentPage.find('.n-option[value]').addClass('is-correct');
+			}
+			courseStatus.action = 'next';
+			document.getElementById('n-course-button').innerHTML = '继续';
 		}
 	}
 
@@ -118,6 +151,16 @@
 
 	$('body').on('click', '#n-course-button', function(){
 		courseAction(courseStatus.action);
+	});
+
+	$('body').on('click', '.n-option', function(){
+		$(this).parent().find('.n-option').removeClass('selected');
+		$(this).addClass('selected');
+		var courseButton = $('#n-course-button');
+		courseButton.html('确定');
+		courseButton.removeClass('disabled');
+		courseStatus.action = 'confirm';
+		courseStatus.buttonDisable = false;
 	});
 
 	// get JSON data for home page
