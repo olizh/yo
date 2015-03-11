@@ -105,10 +105,10 @@
 		if (currentPage.hasClass('n-page-quiz') === true) {
 			courseButton.html('确定');
 			courseButton.addClass('disabled');
-			courseStatus.buttonDisable === true; 
+			courseStatus.buttonDisable = true; 
 		} else {
 			courseButton.removeClass('disabled');
-			courseStatus.buttonDisable === false; 
+			courseStatus.buttonDisable = false; 
 		}
 	}
 
