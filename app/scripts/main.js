@@ -62,17 +62,19 @@
 				var pageTitle = '';
 				var pageMain = '';
 				var pageOption = '';
+				var pageValue = 0; 
 				if (entry.pageType === 'quiz') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
-					pageOption = '<div class="n-option" value=1>' + entry.rightanswer + '</div>';
-					courseStatus.fullScore += 1;
+					pageValue = parseInt(entry.value, 10) || 1;
+					pageOption = '<div class="n-option" value=' + pageValue + '>' + entry.rightanswer + '</div>';
 					$.each(entry.wronganswer, function(itemIndex, item) {
 						pageOption += '<div class="n-option">' + item + '</div>';
 					});
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
 					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '</div></div>';
 				}
+				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>';
@@ -97,18 +99,20 @@
 
 		if (page === courseStatus.length -1) {
 			allPages.eq(0).addClass('n-page-next');
-			courseButton.html('重温');
 		} else if (courseStatus.current < courseStatus.length -1) {
 			allPages.eq(courseStatus.current + 1).addClass('n-page-next');
 		}
 
-		if (currentPage.hasClass('n-page-quiz') === true) {
+		if (currentPage.hasClass('n-page-quiz') === true && currentPage.hasClass('done') === false) {
 			courseButton.html('确定');
 			courseButton.addClass('disabled');
 			courseStatus.buttonDisable = true; 
+			courseStatus.action = 'confirm';
 		} else {
+			courseButton.html((page === courseStatus.length -1) ? '重温' : '继续');
 			courseButton.removeClass('disabled');
 			courseStatus.buttonDisable = false; 
+			courseStatus.action = 'next';
 		}
 	}
 
@@ -117,6 +121,8 @@
 			return;
 		}
 		var currentPage = $('.n-page').eq(courseStatus.current);
+		var currentOption;
+		var currentValue;
 		if (action === 'next') {
 			if (courseStatus.current === courseStatus.length -1) {//last page
 				courseStatus.current = 0;
@@ -125,16 +131,20 @@
 			}
 			openPage(courseStatus.current);
 		} else if (action === 'confirm') {
-			if (currentPage.find('.n-option.selected').attr('value') >= 1) {
-				courseStatus.score += 1; 
-				currentPage.find('.n-option.selected').addClass('is-correct').addClass('tada').addClass('animated').addClass('running');
+			currentOption = currentPage.find('.n-option.selected');
+			currentValue = parseInt(currentOption.attr('value'), 10) || 0;
+			if (currentOption.attr('value') >= 1) {
+				courseStatus.score += currentValue; 
+				currentOption.addClass('is-correct').addClass('tada').addClass('animated').addClass('running');
 			} else {
-				currentPage.find('.n-option.selected').addClass('is-wrong').addClass('shake').addClass('animated').addClass('running');
+				currentOption.addClass('is-wrong').addClass('shake').addClass('animated').addClass('running');
 				currentPage.find('.n-option[value]').addClass('is-correct');
 			}
+			currentPage.addClass('done');
 			courseStatus.action = 'next';
 			document.getElementById('n-course-button').innerHTML = '继续';
 		}
+		console.log ('Your Score: ' + courseStatus.score);
 	}
 
 	// back function
@@ -154,6 +164,9 @@
 	});
 
 	$('body').on('click', '.n-option', function(){
+		if ($(this).parentsUntil('n-page').parent().hasClass('done') === true) {
+			return;
+		}
 		$(this).parent().find('.n-option').removeClass('selected');
 		$(this).addClass('selected');
 		var courseButton = $('#n-course-button');
