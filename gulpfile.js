@@ -15,6 +15,66 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('.tmp/styles'));
 });
 
+gulp.task('origami-css', function () {
+  var http = require('http');
+  var options = {
+      host: 'build.origami.ft.com',
+      path: '/bundles/css?modules=o-ft-header@^2.5.15,o-ft-footer@^2.0.4,o-table@^1.6.0'
+  }
+  var request = http.request(options, function (res) {
+      var data = '';
+      res.on('data', function (chunk) {
+          data += chunk;
+      });
+      res.on('end', function () {
+        var fs = require('fs');
+        fs.writeFile("./bower_components/origami/build.scss", data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("Origami CSS was updated!");
+        }); 
+      });
+  });
+  request.on('error', function (e) {
+      console.log(e.message);
+  });
+  request.end();
+});
+
+gulp.task('origami-js', function () {
+  var http = require('http');
+  var options = {
+      host: 'build.origami.ft.com',
+      path: '/bundles/js?modules=o-ft-header@^2.5.15,o-table@^1.6.0'
+  }
+  var request = http.request(options, function (res) {
+      var data = '';
+      res.on('data', function (chunk) {
+          data += chunk;
+      });
+      res.on('end', function () {
+        var fs = require('fs');
+        fs.writeFile("./bower_components/origami/build.js", data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("Origami JS was updated!");
+        }); 
+      });
+  });
+  request.on('error', function (e) {
+      console.log(e.message);
+  });
+  request.end();
+});
+
+gulp.task('origami', function () {
+  gulp.start('origami-css').start('origami-js');
+});
+
 gulp.task('jshint', function () {
   return gulp.src('app/scripts/**/*.js')
     .pipe($.jshint())
@@ -112,7 +172,8 @@ gulp.task('watch', ['connect'], function () {
     'app/*.html',
     '.tmp/styles/**/*.css',
     'app/scripts/**/*.js',
-    'app/images/**/*'
+    'app/images/**/*',
+    'app/api/**/*'
   ]).on('change', $.livereload.changed);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
