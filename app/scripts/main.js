@@ -77,7 +77,7 @@
 				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
 			});
-			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner">Last Page</div></div>';
+			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><div class="n-page-score"></div><div class="n-page-lead></div></div></div>';
 			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 			openPage(0);
@@ -88,6 +88,7 @@
 		var allPages = $('#n-course-inner .n-page');
 		var currentPage = allPages.eq(page);
 		var courseButton = $('#n-course-button');
+		var scoreRate = 0;
 		courseStatus.current = page;
 		allPages.removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
 		currentPage.addClass('n-page-on');
@@ -96,13 +97,17 @@
 		} else if (courseStatus.current === 0) {
 			allPages.eq(courseStatus.length-1).addClass('n-page-prev');
 		}
-
 		if (page === courseStatus.length -1) {
+			//display scores and feedbacks in last page
 			allPages.eq(0).addClass('n-page-next');
+			if (courseStatus.fullScore>0) {
+				scoreRate = 100 * courseStatus.score/courseStatus.fullScore;
+				scoreRate = Math.round(scoreRate);
+				currentPage.find(".n-page-score").html(scoreRate);				
+			}
 		} else if (courseStatus.current < courseStatus.length -1) {
 			allPages.eq(courseStatus.current + 1).addClass('n-page-next');
 		}
-
 		if (currentPage.hasClass('n-page-quiz') === true && currentPage.hasClass('done') === false) {
 			courseButton.html('确定');
 			courseButton.addClass('disabled');

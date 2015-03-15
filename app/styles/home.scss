@@ -74,6 +74,19 @@
 	.n-page-lead {
 		padding: 0 $padding; 
 	}
+	.n-page-score {
+		text-align: center;
+		font-weight: bold;
+		font-size: 3.6em;
+		font-family: Arial;
+		border-radius: 1em;
+	}
+	.n-page-score.good {
+		background-color: green;
+	}
+	.n-page-score.bad {
+		background-color: red;
+	}
 	.n-home-course-inner {
 		border-bottom-width: 0;
 		background-color: transparent;
