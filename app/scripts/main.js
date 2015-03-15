@@ -13,16 +13,45 @@
 	    windowScrollingActiveFlag: 'gFTScrollerActive'
 	};
 
-	var appTitle = '商学院';
 
 	var courseStatus = {
 		action: 'next',
 		length: 0,
 		current: 0,
-		button: '开始',
 		buttonDisable: false,
 		score: 0,
-		fullScore: 0
+		fullScore: 0,
+		passMark: 60
+	};
+
+	var captions = {
+		language: 'en',
+		text: {
+			appTitle: {
+				en: 'ACADEMY',
+				ch: '商学院'
+			},
+			start: {
+				en: 'START',
+				ch: '开始'
+			},
+			back: {
+				en: 'BACK',
+				ch: '返回'
+			},
+			confirm: {
+				en: 'CONFIRM',
+				ch: '确定'
+			},
+			next: {
+				en: 'NEXT',
+				ch: '继续'
+			},
+			review: {
+				en: 'REVIEW',
+				ch: '重温'
+			}
+		}
 	};
 
 	// if url has isInSWIFT
@@ -39,16 +68,22 @@
 	    }, false);
 	}
 
+	function getCaption(captionName) {
+		return captions.text[captionName][captions.language];
+	}
+
+
 	function openCourse(courseId, courseTitle) {
 		var id = courseId.replace(/^.*\/course\//g, '');
 		var apiUrl = 'api/course' + id + '.json'; 
 		document.getElementById('n-course-inner').innerHTML = '';
 		document.getElementById('n-header-title').innerHTML = courseTitle;
-		document.getElementById('n-course-button').innerHTML = '开始';
+		document.getElementById('n-course-button').innerHTML = getCaption('start');
 		document.body.className = 'n-in-course';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
 			var courseImage = '';
+			var coursePassIntro = '';
 			courseStatus.length = 0;
 			courseStatus.score = 0;
 			courseStatus.fullScore = 0; 
@@ -56,7 +91,11 @@
 				//courseImage = '<img src="' + data.image +'">';
 				courseImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + data.image + ')"></div></div>';
 			}
-			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + '</div></div></div>';
+			if (data.passMark && data.passMark !== '') {
+				courseStatus.passMark = parseInt(data.passMark, 10) || 60; 
+			}
+			coursePassIntro = '<p>需要获得' + courseStatus.passMark + '%的分数过关</p>'; 
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + coursePassIntro + '</div></div></div>';
 			courseStatus.length += 1;
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
@@ -98,23 +137,30 @@
 			allPages.eq(courseStatus.length-1).addClass('n-page-prev');
 		}
 		if (page === courseStatus.length -1) {
-			//display scores and feedbacks in last page
+			// display scores and feedbacks in last page
 			allPages.eq(0).addClass('n-page-next');
-			if (courseStatus.fullScore>0) {
+			// score displays once
+			if (courseStatus.fullScore > 0 && currentPage.hasClass('done') === false) {
 				scoreRate = 100 * courseStatus.score/courseStatus.fullScore;
 				scoreRate = Math.round(scoreRate);
-				currentPage.find(".n-page-score").html(scoreRate);				
+				currentPage.find('.n-page-score').html(scoreRate);
+				if (scoreRate >= courseStatus.passMark) {
+					currentPage.find('.n-page-score').addClass('good animated running infinite pulse');
+				} else {
+					currentPage.find('.n-page-score').addClass('bad animated running shake');
+				}
 			}
+			currentPage.addClass('done');
 		} else if (courseStatus.current < courseStatus.length -1) {
 			allPages.eq(courseStatus.current + 1).addClass('n-page-next');
 		}
 		if (currentPage.hasClass('n-page-quiz') === true && currentPage.hasClass('done') === false) {
-			courseButton.html('确定');
+			courseButton.html(getCaption('confirm'));
 			courseButton.addClass('disabled');
 			courseStatus.buttonDisable = true; 
 			courseStatus.action = 'confirm';
 		} else {
-			courseButton.html((page === courseStatus.length -1) ? '重温' : '继续');
+			courseButton.html((page === courseStatus.length -1) ? getCaption('review') : (page === 0) ? getCaption('start') : getCaption('next'));
 			courseButton.removeClass('disabled');
 			courseStatus.buttonDisable = false; 
 			courseStatus.action = 'next';
@@ -140,22 +186,21 @@
 			currentValue = parseInt(currentOption.attr('value'), 10) || 0;
 			if (currentOption.attr('value') >= 1) {
 				courseStatus.score += currentValue; 
-				currentOption.addClass('is-correct').addClass('tada').addClass('animated').addClass('running');
+				currentOption.addClass('is-correct animated running tada');
 			} else {
-				currentOption.addClass('is-wrong').addClass('shake').addClass('animated').addClass('running');
+				currentOption.addClass('is-wrong animated running shake');
 				currentPage.find('.n-option[value]').addClass('is-correct');
 			}
 			currentPage.addClass('done');
 			courseStatus.action = 'next';
-			document.getElementById('n-course-button').innerHTML = '继续';
+			document.getElementById('n-course-button').innerHTML = getCaption('next');
 		}
-		console.log ('Your Score: ' + courseStatus.score);
 	}
 
 	// back function
 	$('body').on('click', '.n-header__back', function(){
 		document.body.className = '';
-		document.getElementById('n-header-title').innerHTML = appTitle; 
+		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
 	});
 
 	// click into a course
@@ -175,7 +220,7 @@
 		$(this).parent().find('.n-option').removeClass('selected');
 		$(this).addClass('selected');
 		var courseButton = $('#n-course-button');
-		courseButton.html('确定');
+		courseButton.html(getCaption('confirm'));
 		courseButton.removeClass('disabled');
 		courseStatus.action = 'confirm';
 		courseStatus.buttonDisable = false;
@@ -219,4 +264,6 @@
     	}
     });
 
+	document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
+	document.getElementById('n-header__back').innerHTML = getCaption('back'); 
 })(); 

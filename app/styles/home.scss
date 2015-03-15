@@ -77,9 +77,17 @@
 	.n-page-score {
 		text-align: center;
 		font-weight: bold;
-		font-size: 3.6em;
+		font-size: $scoreCardFontSize;
 		font-family: Arial;
-		border-radius: 1em;
+		@include border-top-radius ($scoreCardWidth/2);
+		@include border-left-radius ($scoreCardWidth/2);
+		@include border-right-radius ($scoreCardWidth/2);
+		@include border-bottom-radius ($scoreCardWidth/2);
+		width: $scoreCardWidth;
+		height: $scoreCardWidth; 
+		line-height: $scoreCardWidth;
+		margin: $padding auto;
+		color: white;
 	}
 	.n-page-score.good {
 		background-color: green;
