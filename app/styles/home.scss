@@ -73,27 +73,24 @@
 	}
 	.n-page-lead {
 		padding: 0 $padding; 
+		ul {
+			padding-left: 1em;
+		}
+		.n-wrong-point {
+			color: red;
+		}
+		.n-right-point {
+			color: green;
+		}
 	}
-	.n-page-score {
-		text-align: center;
-		font-weight: bold;
-		font-size: $scoreCardFontSize;
-		font-family: Arial;
-		@include border-top-radius ($scoreCardWidth/2);
-		@include border-left-radius ($scoreCardWidth/2);
-		@include border-right-radius ($scoreCardWidth/2);
-		@include border-bottom-radius ($scoreCardWidth/2);
-		width: $scoreCardWidth;
-		height: $scoreCardWidth; 
-		line-height: $scoreCardWidth;
-		margin: $padding auto;
-		color: white;
+	.n-page-point {
+		display: none; 
 	}
-	.n-page-score.good {
-		background-color: green;
+	span.good {
+		color: green;
 	}
-	.n-page-score.bad {
-		background-color: red;
+	span.bad {
+		color: red;
 	}
 	.n-home-course-inner {
 		border-bottom-width: 0;
