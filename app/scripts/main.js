@@ -22,7 +22,9 @@
 		fullScore: 0,
 		passMark: 60,
 		wrongPoints: [],
-		rightPoints: []
+		rightPoints: [],
+		nextSession: '',
+		currentSession: ''
 	};
 
 	var captions = {
@@ -96,6 +98,11 @@
 	function getCaption(captionName) {
 		return captions.text[captionName][captions.language];
 	}
+	
+	function backButton() {
+		document.body.className = '';
+		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
+	}
 
 	function openPage(page) {
 		var allPages = $('#n-course-inner .n-page');
@@ -119,6 +126,7 @@
 			if (courseStatus.fullScore > 0 && currentPage.hasClass('done') === false) {
 				scoreRate = 100 * courseStatus.score/courseStatus.fullScore;
 				scoreRate = Math.round(scoreRate);
+				courseStatus.scoreRate = scoreRate;
 				if (scoreRate >= courseStatus.passMark) {
 					scoreClass = 'good';
 				} else {
@@ -140,10 +148,15 @@
 		}
 		// handle courseButton
 		if (page === courseStatus.length -1) {
-			courseButton.html(getCaption('nextSession'));
 			courseButton.removeClass('disabled');
 			courseStatus.buttonDisable = false; 
-			courseStatus.action = 'nextSession';
+			if (courseStatus.scoreRate >= courseStatus.passMark) {
+				courseStatus.action = 'nextSession';
+				courseButton.html(getCaption('nextSession'));
+			} else {
+				courseStatus.action = 'retry';
+				courseButton.html(getCaption('retry'));
+			}
 		} else if (currentPage.hasClass('n-page-quiz') === true && currentPage.hasClass('done') === false) {
 			courseButton.html(getCaption('confirm'));
 			courseButton.addClass('disabled');
@@ -159,21 +172,26 @@
 
 	function openSession(sessionId, sessionTitle) {
 		var id = sessionId.replace(/^.*\/course\//g, '');
-		var apiUrl = 'api/session' + id + '.json'; 
+		var apiUrl = 'api/session' + id + '.json';
 		document.getElementById('n-course-inner').innerHTML = '';
-		document.getElementById('n-header-title').innerHTML = sessionTitle;
+		if (typeof sessionTitle !== undefined) {
+			document.getElementById('n-header-title').innerHTML = sessionTitle;
+		}
+		courseStatus.currentSession = id;
 		document.getElementById('n-course-button').innerHTML = getCaption('start');
 		document.body.className = 'n-in-course';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
 			var courseImage = '';
 			var coursePassIntro = '';
+			var courseUrl = 'api/course' + data.course + '.json';
 			//initialize courseStatus
 			courseStatus.length = 0;
 			courseStatus.score = 0;
 			courseStatus.fullScore = 0;
 			courseStatus.wrongPoints = [];
 			courseStatus.rightPoints = [];
+			document.getElementById('n-header-title').innerHTML = data.title;
 			if (data.image && data.image !== '') {
 				//courseImage = '<img src="' + data.image +'">';
 				courseImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + data.image + ')"></div></div>';
@@ -209,6 +227,27 @@
 			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 			openPage(0);
+			$.get(courseUrl, function(data) {
+				var index = 0;
+				var currentSessionIndex;
+				var nextSessionIndex;
+				var sessionsList = [];
+				$.each(data, function(chapterIndex, chapter){
+					$.each(chapter.sessions, function(sessionIndex, session){
+						if (session.id === id) {
+							currentSessionIndex = index;
+						}
+						sessionsList.push(session);
+						index += 1;
+					});
+				});
+				if (currentSessionIndex < index -1) {
+					nextSessionIndex = currentSessionIndex + 1;
+					courseStatus.nextSession = sessionsList[nextSessionIndex].id;
+				} else {
+					courseStatus.nextSession = '';
+				}
+			});
 		});
 	}
 
@@ -247,13 +286,20 @@
 			currentPage.addClass('done');
 			courseStatus.action = 'next';
 			document.getElementById('n-course-button').innerHTML = getCaption('next');
+		} else if (action === 'nextSession') {
+			if (courseStatus.nextSession !== '') {
+				openSession(courseStatus.nextSession);
+			} else {
+				backButton();
+			}
+		} else if (action === 'retry') {
+			openSession(courseStatus.currentSession);
 		}
 	}
 
 	// back function
 	$('body').on('click', '.n-header__back', function(){
-		document.body.className = '';
-		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
+		backButton();
 	});
 
 	// click into a course
@@ -285,16 +331,16 @@
     		homeContent = '';
     	if (typeof data === 'object') {
 	    	$.each(data, function(entryIndex, entry) {
-	    		var bgClass,
-	    			innerClass,
-	    			sClass,
-	    			sMod,
-	    			mClass,
-	    			mMod,
-	    			lClass,
-	    			lMod,
-	    			containerClass,
-	    			clearFloat;
+	    		var bgClass;
+	    		var innerClass;
+	    		var sClass;
+	    		var sMod;
+	    		var mClass;
+	    		var mMod;
+	    		var lClass;
+	    		var lMod;
+	    		var containerClass;
+	    		var clearFloat;
 	    		bgClass = 'n-home-course-green';
 	    		innerClass = 'n-home-course-inner ' + bgClass;
 	    		sMod = entryIndex % 8;
