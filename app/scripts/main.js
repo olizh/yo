@@ -104,6 +104,16 @@
 		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
 	}
 
+	function shuffleArray(array) {
+	    for (var i = array.length - 1; i > 0; i--) {
+	        var j = Math.floor(Math.random() * (i + 1));
+	        var temp = array[i];
+	        array[i] = array[j];
+	        array[j] = temp;
+	    }
+	    return array;
+	}
+
 	function openPage(page) {
 		var allPages = $('#n-course-inner .n-page');
 		var currentPage = allPages.eq(page);
@@ -206,15 +216,23 @@
 				var pageTitle = '';
 				var pageMain = '';
 				var pageOption = '';
+				var pageOptions = [];
 				var pageValue = 0; 
 				var pagePoint = '';
 				if (entry.pageType === 'quiz') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
 					pageValue = parseInt(entry.value, 10) || 1;
-					pageOption = '<div class="n-option" value=' + pageValue + '>' + entry.rightanswer + '</div>';
+
+					pageOptions.push('<div class="n-option" value=' + pageValue + '>' + entry.rightanswer + '</div>');
 					$.each(entry.wronganswer, function(itemIndex, item) {
-						pageOption += '<div class="n-option">' + item + '</div>';
+						pageOptions.push ('<div class="n-option">' + item + '</div>');
+					});
+					if (entry.randomize !== false) {
+						pageOptions = shuffleArray(pageOptions);
+					}
+					$.each(pageOptions, function(itemIndex, item) {
+						pageOption += item;
 					});
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
 					pagePoint = entry.point;
