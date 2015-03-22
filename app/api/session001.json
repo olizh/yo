@@ -7,6 +7,13 @@
   "course": "001",
   "content": [
     {
+      "pageType": "trueOrFalse",
+      "question": "这是什么问题3",
+      "rightanswer": true,
+      "point": "判断题要注意的点",
+      "value": 2
+    },
+    {
       "title": "第一页",
       "pageType": "quiz",
       "question": "这是什么问题",
@@ -33,6 +40,18 @@
       ],
       "point": "第二个要注意的点",
       "randomize": false
+    },
+    {
+      "title": "说明页",
+      "pageType": "image-text",
+      "image": "http://lorempixel.com/800/450/business/",
+      "text": "这个问题是这样的，有大约三刀五段。这个段落就是这样的。三段到五段时比较合适的饿。"
+    },
+    {
+      "pageType": "trueOrFalse",
+      "question": "这是什么问题4",
+      "rightanswer": "false",
+      "point": "判断题要注意的点2"
     },
     {
       "title": "第三页",

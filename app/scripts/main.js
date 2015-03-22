@@ -28,7 +28,7 @@
 	};
 
 	var captions = {
-		language: 'en',
+		language: 'ch',
 		text: {
 			appTitle: {
 				en: 'ACADEMY',
@@ -77,6 +77,18 @@
 			scoreIntro: {
 				en: 'You scored ',
 				ch: '您答对'
+			},
+			trueOrFalse: {
+				en: 'True or False',
+				ch: '判断'
+			},
+			trueStatement: {
+				en: 'True',
+				ch: '正确'
+			},
+			falseStatement: {
+				en: 'False',
+				ch: '错误'
 			}
 		}
 	};
@@ -167,7 +179,7 @@
 				courseStatus.action = 'retry';
 				courseButton.html(getCaption('retry'));
 			}
-		} else if (currentPage.hasClass('n-page-quiz') === true && currentPage.hasClass('done') === false) {
+		} else if ((currentPage.hasClass('n-page-quiz') === true || currentPage.hasClass('n-page-true-false') === true) && currentPage.hasClass('done') === false) {
 			courseButton.html(getCaption('confirm'));
 			courseButton.addClass('disabled');
 			courseStatus.buttonDisable = true; 
@@ -219,6 +231,9 @@
 				var pageOptions = [];
 				var pageValue = 0; 
 				var pagePoint = '';
+				var pageImage = '';
+				var isTrue = '';
+				var isFalse = '';
 				if (entry.pageType === 'quiz') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
@@ -237,6 +252,29 @@
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
 					pagePoint = entry.point;
 					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '<div class="n-page-point">' + pagePoint + '</div></div></div>';
+				} else if (entry.pageType === 'trueOrFalse') {
+					isTrue = '';
+					isFalse = '';
+					pageValue = parseInt(entry.value, 10) || 1;
+					if (entry.rightanswer === true) {
+						isTrue = ' value=' + pageValue;
+					} else {
+						isFalse = ' value=' + pageValue;
+					}
+					pageTitle = '<h3 class="n-page-title">' + getCaption('trueOrFalse') + '</h3>';
+					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
+					pageValue = parseInt(entry.value, 10) || 1;
+					pageOption = '<div class="n-true"' + isTrue + '>' + getCaption('trueStatement') + '</div><div class="n-false"' + isFalse + '>' + getCaption('falseStatement') + '</div>';
+					pageOption = '<div class="n-true-false-container">' + pageOption + '</div>'; 
+					pagePoint = entry.point;
+					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '<div class="n-page-point">' + pagePoint + '</div></div></div>';
+				} else if (entry.pageType === 'image-text') {
+					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
+					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
+					if (entry.image && entry.image !== '') {
+						pageImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + entry.image + ')"></div></div>';
+					} 
+					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageImage + pageTitle + pageMain + '</div></div>';
 				}
 				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
@@ -285,7 +323,7 @@
 			}
 			openPage(courseStatus.current);
 		} else if (action === 'confirm') {
-			currentOption = currentPage.find('.n-option.selected');
+			currentOption = currentPage.find('.n-option.selected,.n-true.selected,.n-false.selected');
 			currentValue = parseInt(currentOption.attr('value'), 10) || 0;
 			currentPoint = currentPage.find('.n-page-point').html() || '';
 			if (currentOption.attr('value') >= 1) {
@@ -296,7 +334,7 @@
 				}
 			} else {
 				currentOption.addClass('is-wrong animated running shake');
-				currentPage.find('.n-option[value]').addClass('is-correct');
+				currentPage.find('.n-option[value],.n-true[value]').addClass('is-correct');
 				if (currentPoint !== '') {
 					courseStatus.wrongPoints.push(currentPoint);
 				}
@@ -313,6 +351,7 @@
 		} else if (action === 'retry') {
 			openSession(courseStatus.currentSession);
 		}
+		//console.log (courseStatus.score);
 	}
 
 	// back function
@@ -330,11 +369,11 @@
 		courseAction(courseStatus.action);
 	});
 
-	$('body').on('click', '.n-option', function(){
+	$('body').on('click', '.n-option, .n-true, .n-false', function(){
 		if ($(this).parentsUntil('n-page').parent().hasClass('done') === true) {
 			return;
 		}
-		$(this).parent().find('.n-option').removeClass('selected');
+		$(this).parent().find('.n-option,.n-true, .n-false').removeClass('selected');
 		$(this).addClass('selected');
 		var courseButton = $('#n-course-button');
 		courseButton.html(getCaption('confirm'));
@@ -342,6 +381,7 @@
 		courseStatus.action = 'confirm';
 		courseStatus.buttonDisable = false;
 	});
+
 
 	// get JSON data for home page
     $.get('api/courses.json', function(data) {
