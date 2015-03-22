@@ -229,6 +229,7 @@
 				var pageMain = '';
 				var pageOption = '';
 				var pageOptions = [];
+				var pageList = '';
 				var pageValue = 0; 
 				var pagePoint = '';
 				var pageExplain = '';
@@ -276,6 +277,15 @@
 						pageExplain = '<div class="n-page-explain animated running fadeInLeft delay-1">' + pageExplain + '</div>';
 					}
 					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
+				} else if (entry.pageType === 'list') {
+					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
+					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
+					pageList = '';
+					$.each(entry.list, function(itemIndex, item) {
+						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title"><div class="n-list-close"></div>' + item.title + '</div><div class="n-list-text-content">' + item.text + '</div></div></div></div></div>';
+					});
+					pageList = '<div class="n-list-container">' + pageList + '</div>';
+					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageTitle + pageMain + pageList + '</div></div>';
 				} else if (entry.pageType === 'image-text') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
@@ -389,7 +399,14 @@
 		courseStatus.action = 'confirm';
 		courseStatus.buttonDisable = false;
 	});
-
+	$('body').on('click', '.n-list-title', function(){
+		$(this).parent().parent().find('.n-list').removeClass('on');
+		$(this).parent().addClass('on');
+	});
+	$('body').on('click', '.n-list-BG, .n-list-close', function(){
+		$(this).parentsUntil('n-list').parent().removeClass('on');
+		console.log('test');
+	});
 
 	// get JSON data for home page
     $.get('api/courses.json', function(data) {
