@@ -1,17 +1,26 @@
 {
   "id": "001",
-  "title": "市场营销",
+  "title": "时间管理",
   "image": "http://lorempixel.com/800/450/business/",
-  "lead": "到了5岁，任何一个胸怀大志的特级大师应该至少已开始学棋",
+  "lead": "你是否每天疲于奔命，但却成效甚微？是否感觉每天都在为别人打工？是不是感觉身不由己，无法控制自己的工作和生活？如果你遇到这些问题，那么你需要学习一下如何管理你的时间。",
   "passMark": 70,
   "course": "001",
   "content": [
     {
       "pageType": "trueOrFalse",
-      "question": "这是什么问题3",
-      "rightanswer": true,
-      "point": "判断题要注意的点",
-      "value": 2
+      "question": "因为有“生物钟”的存在，人对时间的感觉不受外界影响",
+      "rightanswer": false,
+      "point": "人对时间的感觉是最不可靠的",
+      "explain": "尽管人有“生物钟”，但是心理学的实验表明，人对时间的感觉是最不可靠的。比如，看一个很好看的电影的时候，你会觉得时间过得很快。而等待诊断结果的时候，你会觉得时间过得很慢。",
+      "value": 1
+    },
+    {
+      "pageType": "trueOrFalse",
+      "question": "有效的管理者总是先对工作任务进行计划",
+      "rightanswer": false,
+      "point": "有效的管理者总是先对时间进行计划",
+      "explain": "有效的管理者总是先对时间进行计划",
+      "value": 1
     },
     {
       "title": "第一页",

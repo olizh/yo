@@ -231,6 +231,7 @@
 				var pageOptions = [];
 				var pageValue = 0; 
 				var pagePoint = '';
+				var pageExplain = '';
 				var pageImage = '';
 				var isTrue = '';
 				var isFalse = '';
@@ -266,8 +267,15 @@
 					pageValue = parseInt(entry.value, 10) || 1;
 					pageOption = '<div class="n-true"' + isTrue + '>' + getCaption('trueStatement') + '</div><div class="n-false"' + isFalse + '>' + getCaption('falseStatement') + '</div>';
 					pageOption = '<div class="n-true-false-container">' + pageOption + '</div>'; 
-					pagePoint = entry.point;
-					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '<div class="n-page-point">' + pagePoint + '</div></div></div>';
+					pagePoint = entry.point || '';
+					if (pagePoint !== '') {
+						pagePoint = '<div class="n-page-point">' + pagePoint + '</div>';
+					}
+					pageExplain = entry.explain || '';
+					if (pageExplain !== '') {
+						pageExplain = '<div class="n-page-explain animated running fadeInLeft delay-1">' + pageExplain + '</div>';
+					}
+					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
 				} else if (entry.pageType === 'image-text') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
@@ -409,7 +417,7 @@
 	    		lClass = 'l-' + lMod;
 	    		containerClass = 'n-home-course-container ' + sClass + ' ' + mClass + ' ' + lClass;
 	    		clearFloat = '<div class="clearfloat ' + sClass + ' ' + mClass + ' ' + lClass + '"></div>'; 
-	    		homeContent += '<a href="course/' + entry.id + '" title="' + entry.title + '" class="n-course-link"><div class="' + containerClass + '"><div class="' + innerClass + '" /*style="background-image: url(' +  entry.image + '?'+ entry.id + ')"*/><div class="n-home-course-title">' + entry.title + entryIndex + '</div></div></div></a>' + clearFloat;
+	    		homeContent += '<a href="course/' + entry.id + '" title="' + entry.title + '" class="n-course-link"><div class="' + containerClass + '"><div class="' + innerClass + '" /*style="background-image: url(' +  entry.image + '?'+ entry.id + ')"*/><div class="n-home-course-title">' + entry.title + '</div></div></div></a>' + clearFloat;
 		        startScreen.className = 'start-screen fadeOut animated running';
 	        });
 	        document.getElementById('home-content').innerHTML = homeContent;

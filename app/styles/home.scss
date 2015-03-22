@@ -86,6 +86,20 @@
 	.n-page-point {
 		display: none; 
 	}
+	.n-page-explain {
+		position: absolute;
+		bottom: 100 + $padding;
+		width: 100%;
+		background-color: $opaque;
+		padding: $gutterWidth;
+		color: white;
+		display: none;
+	}
+	.done {
+		.n-page-explain {
+			display: block;
+		}
+	}
 	span.good {
 		color: green;
 	}
