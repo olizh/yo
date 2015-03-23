@@ -239,7 +239,7 @@
 
 				pageExplain = entry.explain || '';
 				if (pageExplain !== '') {
-					pageExplain = '<div class="n-page-explain animated running fadeInLeft delay-300">' + pageExplain + '</div>';
+					pageExplain = '<div class="n-page-explain animated running fadeInLeft">' + pageExplain + '</div>';
 				}
 				pagePoint = entry.point || '';
 				if (pagePoint !== '') {
