@@ -90,9 +90,9 @@ h3.n-page-title {
 }
 .n-page-explain {
 	position: absolute;
-	bottom: 100 + $padding;
+	bottom: 0;
 	width: 100%;
-	background-color: $opaque;
+	background-color: $listBG;
 	padding: $gutterWidth;
 	color: white;
 	display: none;
@@ -220,6 +220,9 @@ span.bad {
 	.n-page-lead {
 		font-size: 1.4em;
 	}
+	.n-page-explain {
+		bottom: 100 + $padding;
+	}
 }
 .n-true-false-container{
 	position: absolute;
@@ -282,6 +285,7 @@ span.bad {
 	height: $buttonHeight;
 	margin-top: $padding; 
 	border-color: transparent;
+	//@include vendor-prefix("box-shadow", "0 0 10px rgba(0,0,0,0.75)");
 }
 .n-course-button.disabled {
 	opacity: 0.5;

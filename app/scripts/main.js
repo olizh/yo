@@ -236,6 +236,15 @@
 				var pageImage = '';
 				var isTrue = '';
 				var isFalse = '';
+
+				pageExplain = entry.explain || '';
+				if (pageExplain !== '') {
+					pageExplain = '<div class="n-page-explain animated running fadeInLeft delay-300">' + pageExplain + '</div>';
+				}
+				pagePoint = entry.point || '';
+				if (pagePoint !== '') {
+					pagePoint = '<div class="n-page-point">' + pagePoint + '</div>';
+				}
 				if (entry.pageType === 'quiz') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.question + '</div>'; 
@@ -252,8 +261,7 @@
 						pageOption += item;
 					});
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
-					pagePoint = entry.point;
-					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + '<div class="n-page-point">' + pagePoint + '</div></div></div>';
+					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
 				} else if (entry.pageType === 'trueOrFalse') {
 					isTrue = '';
 					isFalse = '';
@@ -268,14 +276,6 @@
 					pageValue = parseInt(entry.value, 10) || 1;
 					pageOption = '<div class="n-true"' + isTrue + '>' + getCaption('trueStatement') + '</div><div class="n-false"' + isFalse + '>' + getCaption('falseStatement') + '</div>';
 					pageOption = '<div class="n-true-false-container">' + pageOption + '</div>'; 
-					pagePoint = entry.point || '';
-					if (pagePoint !== '') {
-						pagePoint = '<div class="n-page-point">' + pagePoint + '</div>';
-					}
-					pageExplain = entry.explain || '';
-					if (pageExplain !== '') {
-						pageExplain = '<div class="n-page-explain animated running fadeInLeft delay-1">' + pageExplain + '</div>';
-					}
 					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
 				} else if (entry.pageType === 'list') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
