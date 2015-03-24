@@ -4,6 +4,76 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 
+function getUrltoFile (urlSource, fileName) {
+  var http = require('http');
+  var url = require('url');
+  var options = {
+      host: url.parse(urlSource).hostname,
+      path: url.parse(urlSource).pathname + unescape(url.parse(urlSource).search || '')
+  }
+  console.log (options.path);
+  var request = http.request(options, function (res) {
+      var data = '';
+      res.on('data', function (chunk) {
+          data += chunk;
+      });
+      res.on('end', function () {
+        var fs = require('fs');
+        fs.writeFile(fileName, data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log(urlSource);
+            console.log('writen to');
+            console.log(fileName);
+        });
+      });
+  });
+  request.on('error', function (e) {
+      console.log(e.message);
+  });
+  request.end();
+}
+
+
+function postDatatoFile (urlSource, postData, fileName) {
+  var url = require('url');
+  var querystring = require('querystring');
+  var post_data = JSON.stringify(postData);
+  var http = require('http');
+  var options = {
+      host: url.parse(urlSource).hostname,
+      path: url.parse(urlSource).pathname + unescape(url.parse(urlSource).search),
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': post_data.length
+      }
+  }
+  var request = http.request(options, function (res) {
+      var data = '';
+      res.on('data', function (chunk) {
+          data += chunk;
+      });
+      res.on('end', function () {
+        var fs = require('fs');
+        fs.writeFile(fileName, data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log(urlSource);
+            console.log('post data writen to');
+            console.log('fileName');
+        }); 
+      });
+  });
+  request.on('error', function (e) {
+      console.log(e.message);
+  });
+  request.write(post_data);
+  request.end();
+}
+
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
     .pipe($.plumber())
@@ -15,64 +85,9 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('.tmp/styles'));
 });
 
-gulp.task('origami-css', function () {
-  var http = require('http');
-  var options = {
-      host: 'build.origami.ft.com',
-      path: '/bundles/css?modules=o-ft-header@^2.5.15,o-ft-footer@^2.0.4,o-table@^1.6.0'
-  }
-  var request = http.request(options, function (res) {
-      var data = '';
-      res.on('data', function (chunk) {
-          data += chunk;
-      });
-      res.on('end', function () {
-        var fs = require('fs');
-        fs.writeFile("./bower_components/origami/build.scss", data, function(err) {
-            if(err) {
-                return console.log(err);
-            }
-
-            console.log("Origami CSS was updated!");
-        }); 
-      });
-  });
-  request.on('error', function (e) {
-      console.log(e.message);
-  });
-  request.end();
-});
-
-gulp.task('origami-js', function () {
-  var http = require('http');
-  var options = {
-      host: 'build.origami.ft.com',
-      path: '/bundles/js?modules=o-ft-header@^2.5.15,o-table@^1.6.0'
-  }
-  var request = http.request(options, function (res) {
-      var data = '';
-      res.on('data', function (chunk) {
-          data += chunk;
-      });
-      res.on('end', function () {
-        var fs = require('fs');
-        fs.writeFile("./bower_components/origami/build.js", data, function(err) {
-            if(err) {
-                return console.log(err);
-            }
-
-            console.log("Origami JS was updated!");
-        }); 
-      });
-  });
-  request.on('error', function (e) {
-      console.log(e.message);
-  });
-  request.end();
-});
-
 gulp.task('origami', function () {
-  gulp.start('origami-css').start('origami-js');
+  getUrltoFile('http://build.origami.ft.com/bundles/js?modules=o-ft-header@^2.5.15,o-table@^1.6.0', './bower_components/origami/build.js');
+  getUrltoFile ('http://build.origami.ft.com/bundles/css?modules=o-ft-header@^2.5.15,o-ft-footer@^2.0.4,o-table@^1.6.0', './bower_components/origami/build.scss');
 });
 
 gulp.task('jshint', function () {

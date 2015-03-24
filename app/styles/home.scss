@@ -133,11 +133,10 @@ h3.n-page-title {
 .n-list-text {
 	position: absolute;
 	margin: auto;
-	top: 0;
-	bottom: 0;
+	top: $padding;
+	bottom: $padding;
 	left: $padding;
 	right: $padding;
-	height: 80%;
 	max-width: 550px;
 	max-height: 550px;
 	background-color: white;
@@ -217,9 +216,6 @@ span.bad {
 	background-image: url(../images/ic_close_24px.svg);	
 }
 .n-page-true-false {
-	.n-page-lead {
-		font-size: 1.4em;
-	}
 	.n-page-explain {
 		bottom: 100 + $padding;
 	}
