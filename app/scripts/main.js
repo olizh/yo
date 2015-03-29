@@ -222,7 +222,7 @@
 				courseStatus.passMark = parseInt(data.passMark, 10) || 60; 
 			}
 			coursePassIntro = '<p>' + getCaption('passIntro1') + courseStatus.passMark + getCaption('passIntro2') +'</p>'; 
-			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + coursePassIntro + '</div></div></div>';
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + coursePassIntro + '</div></div></div></div></div>';
 			courseStatus.length += 1;
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
@@ -276,7 +276,7 @@
 					pageValue = parseInt(entry.value, 10) || 1;
 					pageOption = '<div class="n-true"' + isTrue + '>' + getCaption('trueStatement') + '</div><div class="n-false"' + isFalse + '>' + getCaption('falseStatement') + '</div>';
 					pageOption = '<div class="n-true-false-container">' + pageOption + '</div>'; 
-					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
+					courseHTML += '<div class="n-page n-page-true-false"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div></div></div>';
 				} else if (entry.pageType === 'list') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
@@ -292,7 +292,7 @@
 					if (entry.image && entry.image !== '') {
 						pageImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + entry.image + ')"></div></div>';
 					} 
-					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageImage + pageTitle + pageMain + '</div></div>';
+					courseHTML += '<div class="n-page"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + pageImage + pageTitle + pageMain + '</div></div></div></div>';
 				}
 				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
