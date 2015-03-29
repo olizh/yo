@@ -48,9 +48,9 @@
 }
 
 .n-page {
-	top: 0;
+	top: $progressHeight;
 	display:none;
-	padding-bottom: 2 * $padding + $buttonHeight; 
+	padding-bottom: $padding + $buttonHeight; 
 	overflow: hidden;
 }
 .n-page.n-page-on, .n-page.n-page-next, .n-page.n-page-prev {
@@ -217,14 +217,14 @@ span.bad {
 }
 .n-page-true-false {
 	.n-page-explain {
-		bottom: 100 + $padding;
+		bottom: 2 * $padding + 100;
 	}
 }
 .n-true-false-container{
 	position: absolute;
 	width: 100%;
-	bottom: 0;
-	padding: 0 14px;
+	bottom: $padding;
+	padding: 0 $padding;
 	//background-color: $trueBG;
 }
 .n-true, .n-false {
@@ -266,7 +266,7 @@ span.bad {
 .n-course-button-container {
 	position: absolute;
 	bottom: 0;
-	height: 2 * $padding + $buttonHeight;
+	height: $padding + $buttonHeight;
 	width: 100%;
 	margin: 0 auto;
 	text-align: center;
@@ -279,13 +279,22 @@ span.bad {
 	max-width: 350px;
 	width: 90%;
 	height: $buttonHeight;
-	margin-top: $padding; 
+	margin-top: 0; 
 	border-color: transparent;
 	//@include vendor-prefix("box-shadow", "0 0 10px rgba(0,0,0,0.75)");
 }
 .n-course-button.disabled {
 	opacity: 0.5;
 	background-color: $disabledBG;
+}
+
+// progress bar
+.n-progress-container {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	height: $progressHeight;
+	background-color: $themeBG;
 }
 
 // one course block
@@ -385,7 +394,7 @@ span.bad {
 	.n-page-true-false {
 		.n-card-inner {
 			.n-page-explain {
-				bottom:0;
+				bottom:$padding;
 				width: 490px;
 				@include vendor-prefix("border-radius", $padding);
 				padding: $padding;
@@ -422,7 +431,6 @@ span.bad {
 		right: 0;
 		top: $padding;
 		width: auto;
-		//background-color: $listBG;
 	}
 	.n-list-text-title, .n-list-BG {
 		display: none;
