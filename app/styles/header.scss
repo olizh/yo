@@ -2,7 +2,8 @@
 .n-header {
 	height: $headerHeight;
 	width: 100%;
-	position:absolute;
+	position: absolute;
+	font-size: $baseFontSize;
 }
 .n-header__container {
 	background:$themeBG;

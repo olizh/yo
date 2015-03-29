@@ -216,7 +216,7 @@
 			document.getElementById('n-header-title').innerHTML = data.title;
 			if (data.image && data.image !== '') {
 				//courseImage = '<img src="' + data.image +'">';
-				courseImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + data.image + ')"></div></div>';
+				courseImage = '<div class="n-page-image-container"><div class="n-page-image-inner" style="background-image: url(' + data.image + ')"></div></div>';
 			}
 			if (data.passMark && data.passMark !== '') {
 				courseStatus.passMark = parseInt(data.passMark, 10) || 60; 
@@ -369,7 +369,6 @@
 		} else if (action === 'retry') {
 			openSession(courseStatus.currentSession);
 		}
-		//console.log (courseStatus.score);
 	}
 
 	// back function
@@ -405,7 +404,6 @@
 	});
 	$('body').on('click', '.n-list-BG, .n-list-close', function(){
 		$(this).parentsUntil('n-list').parent().removeClass('on');
-		console.log('test');
 	});
 
 	// get JSON data for home page

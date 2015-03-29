@@ -289,17 +289,17 @@ span.bad {
 }
 
 // one course block
-.n-home-course-container {
+.n-home-course-container, .n-page-image-container {
 	position: relative;
 }
 
-.n-home-course-container:after {
+.n-home-course-container:after, .n-page-image-container:after {
 	padding-top: $homeCoursePicRatio;
 	display: block;
 	content: '';
 }
 
-.n-home-course-inner {
+.n-home-course-inner, .n-page-image-inner {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -312,7 +312,7 @@ span.bad {
 	background-size: 100% auto;
 	border-bottom: $gutterWidth solid $defaultBG;
 }
-.n-home-course-inner:after {
+.n-home-course-inner:after, .n-page-image-inner:after {
 	content: '';
 	height: 100%;
 	width: 100%;
@@ -333,6 +333,16 @@ span.bad {
   	z-index: 2;
 }
 
+//starting page
+.n-page-start {
+	.n-page-inner {
+		max-width:490px;
+		margin:auto;
+	}
+	.n-page-title, .n-page-lead {
+		padding: 0;
+	}
+}
 
 .is-in-swift {
 	.n-content-container {
@@ -355,6 +365,12 @@ span.bad {
 	.n-content-inner {
 		padding: $gutterWidth;
 	}
+	.n-page-image-container {
+		margin-top: $padding;
+	}
+	body {
+		font-size:$bigFontSize;
+	}
 }
 
 
@@ -366,10 +382,16 @@ span.bad {
 	.n-home-course-container {
 		width: 33.33333333%;
 	}
+	body {
+		font-size:$biggerFontSize;
+	}
 }
 
 @media only screen and (min-width: 970px) {
 	@import "grid-layout/l-verge.scss";
+	body {
+		font-size:$largeFontSize;
+	}
 }
 
 @media only screen and (min-width: 1210px) {
