@@ -204,6 +204,7 @@
 		document.body.className = 'n-in-course';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
+			var progressHTML = '';
 			var courseImage = '';
 			var coursePassIntro = '';
 			var courseUrl = 'api/course' + data.course + '.json';
@@ -296,10 +297,14 @@
 				}
 				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
+				// course progress bar
+				progressHTML += '<div class="n-progress"></div>';
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div>';
+			progressHTML += '<div class="n-progress"></div>';
 			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
+			document.getElementById('n-progress-inner').innerHTML = progressHTML;
 			openPage(0);
 			$.get(courseUrl, function(data) {
 				var index = 0;

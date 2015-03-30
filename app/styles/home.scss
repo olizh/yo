@@ -296,6 +296,18 @@ span.bad {
 	height: $progressHeight;
 	background-color: $themeBG;
 }
+.n-progress-inner {
+	display: table;
+	padding-left: $padding;
+	padding-right: $padding;
+	height: $progressBarHeight;
+	width: 100%;
+}
+.n-progress {
+	display: table-cell;
+	height: $progressBarHeight;
+	background: white;
+}
 
 // one course block
 .n-home-course-container, .n-page-image-container {
