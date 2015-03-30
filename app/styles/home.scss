@@ -306,7 +306,13 @@ span.bad {
 .n-progress {
 	display: table-cell;
 	height: $progressBarHeight;
-	background: white;
+	background: $progressBG;
+}
+.n-progress:first-child {
+	@include vendor-prefix("border-radius", $progressBarHeight/2 0 0 $progressBarHeight/2);
+}
+.n-progress:last-child {
+	@include vendor-prefix("border-radius", 0 $progressBarHeight/2 $progressBarHeight/2 0);
 }
 
 // one course block
