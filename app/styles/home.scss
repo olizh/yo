@@ -295,6 +295,7 @@ span.bad {
 	top: 0;
 	height: $progressHeight;
 	background-color: $themeBG;
+	z-index: 1;
 }
 .n-progress-inner {
 	display: table;

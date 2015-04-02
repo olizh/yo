@@ -135,7 +135,7 @@
 		var points = '';
 		var progressBar = $('#n-progress-inner .n-progress');
 		progressBar.removeClass('on');
-		progressBar.slice(0, page).addClass('on');
+		progressBar.slice(0, page).addClass('on done');
 		courseStatus.current = page;
 		allPages.removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
 		currentPage.addClass('n-page-on');
@@ -301,7 +301,7 @@
 				courseStatus.fullScore += pageValue;
 				courseStatus.length += 1;
 				// course progress bar
-				progressHTML += '<div class="n-progress"></div>';
+				progressHTML += '<div class="n-progress" pageNum=' + entryIndex + '></div>';
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div>';
 			progressHTML += '<div class="n-progress"></div>';
@@ -413,6 +413,11 @@
 	$('body').on('click', '.n-list-BG, .n-list-close', function(){
 		$(this).parentsUntil('n-list').parent().removeClass('on');
 	});
+	$('body').on('click', '.n-progress.done', function(){
+		var pageNum = $(this).attr('pageNum');
+		pageNum = parseInt(pageNum, 10);
+		openPage(pageNum);
+	})
 
 	// get JSON data for home page
     $.get('api/courses.json', function(data) {
