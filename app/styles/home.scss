@@ -308,6 +308,9 @@ span.bad {
 	height: $progressBarHeight;
 	background: $progressBG;
 }
+.n-progress.on {
+	background: white;
+}
 .n-progress:first-child {
 	@include vendor-prefix("border-radius", $progressBarHeight/2 0 0 $progressBarHeight/2);
 }
@@ -363,7 +366,7 @@ span.bad {
 
 
 .is-in-swift {
-	.n-content-container {
+	.n-content-container, .n-course-container {
 		top: $headerHeight + $statusBarHeight;
 	}
 }

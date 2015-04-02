@@ -133,6 +133,9 @@
 		var scoreRate = 0;
 		var scoreClass = '';
 		var points = '';
+		var progressBar = $('#n-progress-inner .n-progress');
+		progressBar.removeClass('on');
+		progressBar.slice(0, page).addClass('on');
 		courseStatus.current = page;
 		allPages.removeClass('n-page-on').removeClass('n-page-next').removeClass('n-page-prev');
 		currentPage.addClass('n-page-on');
