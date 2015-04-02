@@ -304,7 +304,7 @@
 				progressHTML += '<div class="n-progress" pageNum=' + entryIndex + '></div>';
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div>';
-			progressHTML += '<div class="n-progress"></div>';
+			progressHTML += '<div class="n-progress" pageNum=' + (courseStatus.length -1) + '></div>';
 			courseStatus.length += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 			document.getElementById('n-progress-inner').innerHTML = progressHTML;
