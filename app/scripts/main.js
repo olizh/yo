@@ -42,6 +42,10 @@
 				en: 'BACK',
 				ch: '返回'
 			},
+			close: {
+				en: 'CLOSE',
+				ch: '关闭'
+			}, 
 			confirm: {
 				en: 'CONFIRM',
 				ch: '确定'
@@ -112,8 +116,20 @@
 	}
 	
 	function backButton() {
+		if (courseStatus.current > 0) {
+			courseStatus.current -= 1;
+			openPage (courseStatus.current);
+			if (courseStatus.current > 0) {
+				$('#n-header__close').addClass('on');
+			}
+		} else {
+			closeButton();
+		}
+	}
+
+	function closeButton() {
 		document.body.className = '';
-		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
+		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 		
 	}
 
 	function shuffleArray(array) {
@@ -193,6 +209,7 @@
 			courseStatus.buttonDisable = false; 
 			courseStatus.action = 'next';
 		}
+		$('#n-header__close').removeClass('on');
 	}
 
 	function openSession(sessionId, sessionTitle) {
@@ -384,6 +401,11 @@
 		backButton();
 	});
 
+	// close function
+	$('body').on('click', '.n-header__close', function(){
+		closeButton();
+	});
+
 	// click into a course
 	$('body').on('click', '.n-course-link', function(){
 		openSession(this.href, this.title);
@@ -417,7 +439,7 @@
 		var pageNum = $(this).attr('pageNum');
 		pageNum = parseInt(pageNum, 10);
 		openPage(pageNum);
-	})
+	});
 
 	// get JSON data for home page
     $.get('api/courses.json', function(data) {
