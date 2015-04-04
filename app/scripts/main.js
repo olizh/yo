@@ -19,6 +19,7 @@
 		current: 0,
 		buttonDisable: false,
 		score: 0,
+		lostScore: 0,
 		fullScore: 0,
 		passMark: 60,
 		wrongPoints: [],
@@ -222,6 +223,7 @@
 		courseStatus.currentSession = id;
 		document.getElementById('n-course-button').innerHTML = getCaption('start');
 		document.body.className = 'n-in-course';
+		document.getElementById('n-header__score').innerHTML = '<div class="n-battery-container" id="n-battery-container"><div class="n-battery-inner" id="n-battery-inner"></div></div>';
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
 			var progressHTML = '';
@@ -231,6 +233,7 @@
 			//initialize courseStatus
 			courseStatus.length = 0;
 			courseStatus.score = 0;
+			courseStatus.lostScore = 0;
 			courseStatus.fullScore = 0;
 			courseStatus.wrongPoints = [];
 			courseStatus.rightPoints = [];
@@ -358,6 +361,8 @@
 		var currentOption;
 		var currentValue;
 		var currentPoint = '';
+		var batteryLevel = 0;
+		var lostScore = 0;
 		if (action === 'next') {
 			if (courseStatus.current === courseStatus.length -1) {//last page
 				courseStatus.current = 0;
@@ -376,11 +381,26 @@
 					courseStatus.rightPoints.push(currentPoint);
 				}
 			} else {
+				lostScore = currentPage.find('.n-option[value],.n-true[value],.n-false[value]').attr('value');
+				lostScore = parseInt(lostScore, 10) || 0;
+				courseStatus.lostScore += lostScore;
 				currentOption.addClass('is-wrong animated running shake');
-				currentPage.find('.n-option[value],.n-true[value]').addClass('is-correct');
+				currentPage.find('.n-option[value],.n-true[value],.n-false[value]').addClass('is-correct');
 				if (currentPoint !== '') {
 					courseStatus.wrongPoints.push(currentPoint);
 				}
+				// reduce battery for wrong answer
+				batteryLevel = (100 * 100 * courseStatus.lostScore)/(courseStatus.fullScore * (100 - courseStatus.passMark));
+				if (batteryLevel > 100) {
+					$('#n-battery-inner').height('100%');
+					$('#n-battery-container').addClass('failed');
+				} else {
+					$('#n-battery-inner').height(batteryLevel + '%');
+					if (batteryLevel > 60) {
+						$('#n-battery-container').addClass('alert');
+					}
+				}
+				$('#n-battery-container').addClass('used');
 			}
 			currentPage.addClass('done');
 			courseStatus.action = 'next';

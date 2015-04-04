@@ -49,6 +49,36 @@
 	display: none;
 	left: 62px;
 }
+.n-header__score {
+	width: $batteryWidth;
+	right: $padding;
+	display: none;
+}
+.n-battery-container {
+	width: 100%;
+	height: $batteryBodyHeight;
+	margin-top: ($headerHeight - $batteryBodyHeight + $batteryTopHeight) / 2;
+	background-color: $batteryBG;
+	position: relative;
+}
+.n-battery-container:before {
+	content: '';
+	height: $batteryTopHeight;
+	width: $batteryTopWidth;
+	display: block;
+	background-color: $batteryBG;
+	position: absolute;
+	top: -$batteryTopHeight;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+.n-battery-container.used:before, .n-battery-inner {
+	background-color: $batteryUsedBG;
+}
+.n-battery-container.alert,.n-battery-container.used.failed .n-battery-inner,.n-battery-container.used.failed:before  {
+	background-color: $batteryAlertBG;
+}
 .is-in-swift {
 	.n-header {
 		height: $headerHeight + $statusBarHeight;
@@ -58,13 +88,10 @@
 	}
 }
 .n-in-course {
-	.n-header__back {
+	.n-header__back, .n-header__close.on, .n-header__score {
 		display: block;
 	}
-	.n-header__close.on {
-		display: block;
-	}
-	.n-header__menu {
+	.n-header__menu, .n-header__setting {
 		display: none;
 	}
 }

@@ -12,11 +12,18 @@ $listBG: #3498db;
 $darkBG: #333333;
 $opaque: rgba(0,0,0,0.7);
 $barBG: #34495e;
+$batteryBG: white;
+$batteryUsedBG: #CCCCCC;
+$batteryAlertBG: red;
 
 // width, height and padding
 $headerHeight: 44px;
 $statusBarHeight: 20px;
-$buttonHeight: 36px; 
+$buttonHeight: 36px;
+$batteryBodyHeight: 20px;
+$batteryTopHeight: 4px;
+$batteryWidth:14px;
+$batteryTopWidth: 4px;
 $progressHeight: 20px;
 $progressBarHeight: 8px;
 $sideButtonWidth: 52px;
