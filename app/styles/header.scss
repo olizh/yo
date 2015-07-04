@@ -23,10 +23,10 @@
 	top: 0;
 	background-position: center center;
 	background-repeat: no-repeat;
+	cursor: pointer;
 }
 .n-header__left {
 	left: 0;
-	
 }
 .n-header__right {
 	right: 0; 
@@ -60,6 +60,14 @@
 	margin-top: ($headerHeight - $batteryBodyHeight + $batteryTopHeight) / 2;
 	background-color: $batteryBG;
 	position: relative;
+	@include vendor-prefix("border-radius", "2px");
+}
+.n-battery-inner {
+	@include vendor-prefix("border-radius", "2px 2px 0 0");
+}
+.n-battery-container.used.failed .n-battery-inner {
+	@include vendor-prefix("border-radius", "2px");
+	background-color: $batteryAlertBG;
 }
 .n-battery-container:before {
 	content: '';
@@ -72,11 +80,12 @@
 	left: 0;
 	right: 0;
 	margin: auto;
+	@include vendor-prefix("border-radius", "1px 1px 0 0");
 }
 .n-battery-container.used:before, .n-battery-inner {
 	background-color: $batteryUsedBG;
 }
-.n-battery-container.alert,.n-battery-container.used.failed .n-battery-inner,.n-battery-container.used.failed:before  {
+.n-battery-container.alert,.n-battery-container.used.failed:before  {
 	background-color: $batteryAlertBG;
 }
 .is-in-swift {

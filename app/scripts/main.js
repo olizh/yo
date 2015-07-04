@@ -15,7 +15,7 @@
 
 	var courseStatus = {
 		action: 'next',
-		length: 0,
+		len: 0,
 		current: 0,
 		buttonDisable: false,
 		score: 0,
@@ -59,14 +59,6 @@
 				en: 'REVIEW',
 				ch: '重温'
 			},
-			passIntro1: {
-				en: 'You Need ',
-				ch: '需要'
-			},
-			passIntro2: {
-				en: '% to Pass',
-				ch: '%的分数过关'
-			},
 			retry: {
 				en: 'RETRY',
 				ch: '重试'
@@ -82,6 +74,10 @@
 			scoreIntro: {
 				en: 'You scored ',
 				ch: '您答对'
+			},
+			pointsIntro: {
+				en: 'Key Points of This Session: ',
+				ch: '本节的关键点：'
 			},
 			trueOrFalse: {
 				en: 'True or False',
@@ -117,7 +113,7 @@
 	}
 	
 	function backButton() {
-		if (courseStatus.current > 0) {
+		if (courseStatus.current > 0 && courseStatus.current < courseStatus.len -1) {
 			courseStatus.current -= 1;
 			openPage (courseStatus.current);
 			if (courseStatus.current > 0) {
@@ -159,9 +155,9 @@
 		if (page > 0) {
 			allPages.eq(courseStatus.current - 1).addClass('n-page-prev');
 		} else if (courseStatus.current === 0) {
-			allPages.eq(courseStatus.length-1).addClass('n-page-prev');
+			allPages.eq(courseStatus.len-1).addClass('n-page-prev');
 		}
-		if (page === courseStatus.length -1) {
+		if (page === courseStatus.len -1) {
 			// display scores and feedbacks in last page
 			allPages.eq(0).addClass('n-page-next');
 			// score displays once
@@ -182,14 +178,14 @@
 				});
 				points = '<ul>' + points + '</ul>';
 				currentPage.find('.n-page-title').html(getCaption('scoreIntro') + '<span class="' + scoreClass + '">' + scoreRate + '%</span>');
-				currentPage.find('.n-page-lead').html(points);
+				currentPage.find('.n-page-lead').html('<div>' + getCaption('pointsIntro') + '</div>' + points);
 			}
 			currentPage.addClass('done');
-		} else if (courseStatus.current < courseStatus.length -1) {
+		} else if (courseStatus.current < courseStatus.len -1) {
 			allPages.eq(courseStatus.current + 1).addClass('n-page-next');
 		}
 		// handle courseButton
-		if (page === courseStatus.length -1) {
+		if (page === courseStatus.len -1) {
 			courseButton.removeClass('disabled');
 			courseStatus.buttonDisable = false; 
 			if (courseStatus.scoreRate >= courseStatus.passMark) {
@@ -205,7 +201,7 @@
 			courseStatus.buttonDisable = true; 
 			courseStatus.action = 'confirm';
 		} else {
-			courseButton.html((page === courseStatus.length -1) ? getCaption('review') : (page === 0) ? getCaption('start') : getCaption('next'));
+			courseButton.html((page === courseStatus.len -1) ? getCaption('review') : (page === 0) ? getCaption('start') : getCaption('next'));
 			courseButton.removeClass('disabled');
 			courseStatus.buttonDisable = false; 
 			courseStatus.action = 'next';
@@ -228,10 +224,9 @@
 			var courseHTML = '';
 			var progressHTML = '';
 			var courseImage = '';
-			var coursePassIntro = '';
 			var courseUrl = 'api/course' + data.course + '.json';
 			//initialize courseStatus
-			courseStatus.length = 0;
+			courseStatus.len = 0;
 			courseStatus.score = 0;
 			courseStatus.lostScore = 0;
 			courseStatus.fullScore = 0;
@@ -245,9 +240,8 @@
 			if (data.passMark && data.passMark !== '') {
 				courseStatus.passMark = parseInt(data.passMark, 10) || 60; 
 			}
-			coursePassIntro = '<p>' + getCaption('passIntro1') + courseStatus.passMark + getCaption('passIntro2') +'</p>'; 
-			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + coursePassIntro + '</div></div></div></div></div>';
-			courseStatus.length += 1;
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + '</div></div></div></div></div>';
+			courseStatus.len += 1;
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
 				var pageMain = '';
@@ -319,13 +313,13 @@
 					courseHTML += '<div class="n-page"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + pageImage + pageTitle + pageMain + '</div></div></div></div>';
 				}
 				courseStatus.fullScore += pageValue;
-				courseStatus.length += 1;
+				courseStatus.len += 1;
 				// course progress bar
 				progressHTML += '<div class="n-progress" pageNum=' + entryIndex + '></div>';
 			});
 			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div>';
-			progressHTML += '<div class="n-progress" pageNum=' + (courseStatus.length -1) + '></div>';
-			courseStatus.length += 1;
+			progressHTML += '<div class="n-progress" pageNum=' + (courseStatus.len -1) + '></div>';
+			courseStatus.len += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 			document.getElementById('n-progress-inner').innerHTML = progressHTML;
 			openPage(0);
@@ -364,9 +358,9 @@
 		var batteryLevel = 0;
 		var lostScore = 0;
 		if (action === 'next') {
-			if (courseStatus.current === courseStatus.length -1) {//last page
+			if (courseStatus.current === courseStatus.len -1) {//last page
 				courseStatus.current = 0;
-			} else if (courseStatus.current < courseStatus.length -1) {
+			} else if (courseStatus.current < courseStatus.len -1) {
 				courseStatus.current += 1; 
 			}
 			openPage(courseStatus.current);

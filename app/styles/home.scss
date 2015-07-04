@@ -12,6 +12,7 @@
 	left: 0;
 	right: 0;
 	overflow: hidden;
+	background-color: white;
 	@include transition(all 0.5s ease-in-out);
 	@include backface-visibility(hidden);
 }
@@ -75,8 +76,10 @@ h3.n-page-title {
 }
 .n-page-lead {
 	padding: 0 $padding; 
+	margin-top: 1em;
 	ul {
 		padding-left: 1em;
+		margin: 0;
 	}
 	.n-wrong-point {
 		color: red;
@@ -222,13 +225,16 @@ span.bad {
 }
 .n-true-false-container{
 	position: absolute;
-	width: 100%;
+	width: 230px;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
 	bottom: $padding;
 	padding: 0 $padding;
 	//background-color: $trueBG;
 }
 .n-true, .n-false {
-	width:50%;
+	width:100px;
 	height: 100px;
 	line-height: 100px;
 	text-align: center;
@@ -243,6 +249,9 @@ span.bad {
 .n-true.selected, .n-false.selected {
 	background-image: url(../images/ic_check_24px.svg);
 }
+.n-true.selected {
+	background-position: right 5px top 5px;
+}
 .n-true.is-correct, .n-false.is-correct {
 	background-color: $lighterThemeBG;
 }
@@ -256,12 +265,12 @@ span.bad {
 .n-true {
 	float: left; 
 	border-width: 0 1px 0 0;
-	@include vendor-prefix("border-radius", "14px 0 0 14px");
+	@include vendor-prefix("border-radius", "50px 0 0 50px");
 }
 .n-false {
 	float: right; 
 	border-width: 0 0 0 1px;
-	@include vendor-prefix("border-radius", "0 14px 14px 0");
+	@include vendor-prefix("border-radius", "0 50px 50px 0");
 }
 .n-course-button-container {
 	position: absolute;
