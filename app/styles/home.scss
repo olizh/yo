@@ -2,7 +2,7 @@
 // nested style is not recommended as it bloats the output code
 
 // the content full body
-.n-content-container, .n-course-container, .n-page {
+.n-content-container, .n-course-intro-container, .n-course-container, .n-page {
 	width:100%;
 	max-width: 1280px;
 	position: absolute;
@@ -30,7 +30,7 @@
 
 // in the course
 .n-in-course {
-	.n-content-container {
+	.n-content-container, .n-course-intro-container {
 		@include transform(translate3d(-100%, 0, 0));
 	}
 	.n-course-container {
@@ -38,7 +38,19 @@
 	}
 }
 
-.n-course-container {
+.n-in-course-intro {
+	.n-content-container {
+		@include transform(translate3d(-100%, 0, 0));
+	}
+	.n-course-intro-container {
+		@include transform(translate3d(0, 0, 0));
+	}
+	.n-course-container {
+		@include transform(translate3d(100%, 0, 0));
+	}
+}
+
+.n-course-container, .n-course-intro-container {
 	@include transform(translate3d(100%, 0, 0));
 	.n-course-inner, .n-page-inner {
 		width: 100%;
@@ -46,6 +58,21 @@
 		position: relative;
 		overflow: hidden;
 	}
+}
+
+.n-course-link {
+	cursor: pointer;
+}
+
+.n-chapter-title {
+	font-weight: bold;
+	font-size:1.4em;
+	padding: $padding $padding 0 $padding;
+}
+
+.n-session-title {
+	font-size:1.2em;
+	padding: $padding 2*$padding;
 }
 
 .n-page {
@@ -107,13 +134,19 @@ h3.n-page-title {
 .n-list {
 
 }
-.n-list-title{
+.n-list-title {
 	font-weight: bold;
 	@include vendor-prefix("border-radius", "5px");
 	background-color: $listBG;
 	color: white;
 	margin: $padding 0;
 	padding: $padding;
+}
+.n-list-title.done {
+	background-size: 48px 48px;
+	background-position: right center;
+	background-image: url(../images/ic_check_24px.svg);	
+	background-repeat: no-repeat;
 }
 .n-list-text-container {
 	display:none;

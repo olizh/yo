@@ -104,3 +104,12 @@
 		display: none;
 	}
 }
+
+.n-in-course-intro {
+	.n-header__back, .n-header__score {
+		display: block;
+	}
+	.n-header__menu, .n-header__setting {
+		display: none;
+	}
+}

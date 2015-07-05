@@ -13,6 +13,8 @@
 	    windowScrollingActiveFlag: 'gFTScrollerActive'
 	};
 
+	var gCourseIntroScroller;
+
 	var courseStatus = {
 		action: 'next',
 		len: 0,
@@ -25,7 +27,11 @@
 		wrongPoints: [],
 		rightPoints: [],
 		nextSession: '',
-		currentSession: ''
+		currentSession: '',
+		page: '',
+		courseTitle: '',
+		courseId: '',
+		courseIntro: {}
 	};
 
 	var captions = {
@@ -125,8 +131,16 @@
 	}
 
 	function closeButton() {
-		document.body.className = '';
-		document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 		
+		if (courseStatus.page === 'session') { 
+			courseStatus.page = 'course';
+			courseStatus.current = 0;
+			document.body.className = 'n-in-course-intro';
+			document.getElementById('n-header-title').innerHTML = courseStatus.courseTitle;
+		} else {
+			courseStatus.page = '';
+			document.body.className = '';
+			document.getElementById('n-header-title').innerHTML = getCaption('appTitle');
+		}
 	}
 
 	function shuffleArray(array) {
@@ -209,9 +223,38 @@
 		$('#n-header__close').removeClass('on');
 	}
 
+	function openCourse(courseId, courseTitle) {
+		var id = courseId.replace(/^.*course\//g, '');
+		var apiUrl = 'api/courses/course' + id + '/index.json';
+		courseStatus.page = 'course';
+		courseStatus.courseId = id;
+		courseStatus.courseTitle = courseTitle; 
+		document.getElementById('n-course-intro-inner').innerHTML = '';
+		if (typeof courseTitle !== undefined) {
+			document.getElementById('n-header-title').innerHTML = courseTitle;
+		}
+		document.body.className = 'n-in-course-intro';
+		$.get(apiUrl, function(data) {
+			var courseHTML = '';
+			courseStatus.courseIntro = data;
+			$.each(data.content, function(entryIndex, entry) {
+				courseHTML += '<div class="n-chapter-title">' + entry.title + '</div>';
+				$.each(entry.sessions, function(sessionIndex, session) {
+					courseHTML += '<div session-id="' + session.id + '" class="n-session-title">' + session.title + '</div>';
+				});
+			});
+			document.getElementById('n-course-intro-inner').innerHTML = courseHTML;
+			//add scroller to course intro page
+			if (typeof gCourseIntroScroller !=="object") {
+		        gCourseIntroScroller = new FTScroller(document.getElementById('n-course-intro-container'), verticalScrollOpts);
+		    }
+		});
+	}
+
 	function openSession(sessionId, sessionTitle) {
 		var id = sessionId.replace(/^.*\/course\//g, '');
-		var apiUrl = 'api/session' + id + '.json';
+		var apiUrl = 'api/courses/course' + courseStatus.courseId + '/session' + id + '.json';
+		courseStatus.page = 'session';
 		document.getElementById('n-course-inner').innerHTML = '';
 		if (typeof sessionTitle !== undefined) {
 			document.getElementById('n-header-title').innerHTML = sessionTitle;
@@ -224,7 +267,7 @@
 			var courseHTML = '';
 			var progressHTML = '';
 			var courseImage = '';
-			var courseUrl = 'api/course' + data.course + '.json';
+			var courseUrl = 'api/courses/course' + data.course + '/index.json';
 			//initialize courseStatus
 			courseStatus.len = 0;
 			courseStatus.score = 0;
@@ -232,9 +275,9 @@
 			courseStatus.fullScore = 0;
 			courseStatus.wrongPoints = [];
 			courseStatus.rightPoints = [];
+			courseStatus.courseId = data.course;
 			document.getElementById('n-header-title').innerHTML = data.title;
 			if (data.image && data.image !== '') {
-				//courseImage = '<img src="' + data.image +'">';
 				courseImage = '<div class="n-page-image-container"><div class="n-page-image-inner" style="background-image: url(' + data.image + ')"></div></div>';
 			}
 			if (data.passMark && data.passMark !== '') {
@@ -254,7 +297,6 @@
 				var pageImage = '';
 				var isTrue = '';
 				var isFalse = '';
-
 				pageExplain = entry.explain || '';
 				if (pageExplain !== '') {
 					pageExplain = '<div class="n-page-explain animated running fadeInLeft">' + pageExplain + '</div>';
@@ -323,28 +365,40 @@
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
 			document.getElementById('n-progress-inner').innerHTML = progressHTML;
 			openPage(0);
-			$.get(courseUrl, function(data) {
-				var index = 0;
-				var currentSessionIndex;
-				var nextSessionIndex;
-				var sessionsList = [];
-				$.each(data, function(chapterIndex, chapter){
-					$.each(chapter.sessions, function(sessionIndex, session){
-						if (session.id === id) {
-							currentSessionIndex = index;
-						}
-						sessionsList.push(session);
-						index += 1;
-					});
+			// if the session courseID doesn't match the current courseID
+			// load it from url
+			// otherwise use data in the memory
+			if (courseStatus.courseIntro.courseId === data.course) {
+				getNextSession(courseStatus.courseIntro, id);
+			} else {
+				$.get(courseUrl, function(data) {
+					getNextSession(data, id);
 				});
-				if (currentSessionIndex < index -1) {
-					nextSessionIndex = currentSessionIndex + 1;
-					courseStatus.nextSession = sessionsList[nextSessionIndex].id;
-				} else {
-					courseStatus.nextSession = '';
+			}
+		});
+	}
+
+	function getNextSession (data, id) {
+		var index = 0;
+		var currentSessionIndex;
+		var nextSessionIndex;
+		var sessionsList = [];
+		courseStatus.courseTitle = data.title;
+		$.each(data.content, function(chapterIndex, chapter){
+			$.each(chapter.sessions, function(sessionIndex, session){
+				if (session.id === id) {
+					currentSessionIndex = index;
 				}
+				sessionsList.push(session);
+				index += 1;
 			});
 		});
+		if (currentSessionIndex < index -1) {
+			nextSessionIndex = currentSessionIndex + 1;
+			courseStatus.nextSession = sessionsList[nextSessionIndex].id;
+		} else {
+			courseStatus.nextSession = '';
+		}
 	}
 
 	function courseAction(action) {
@@ -422,7 +476,19 @@
 
 	// click into a course
 	$('body').on('click', '.n-course-link', function(){
-		openSession(this.href, this.title);
+		// open the course intro 
+		// to see chapter and session list
+		// 在宽屏上，将课程内容列表展示在边栏
+		// 在窄屏上，先展示列表，然后点击进入第一课
+		// 如果一门课程只有一个Session，应该直接进入，回退也直接退回上级菜单
+		// openSession(this.href, this.title);
+		openCourse(this.getAttribute('course-id'), this.title);
+		return false;
+	});
+
+	// click into a session
+	$('body').on('click', '.n-session-title', function(){
+		openSession(this.getAttribute('session-id'), this.innerHTML);
 		return false;
 	});
 
@@ -443,20 +509,22 @@
 		courseStatus.buttonDisable = false;
 	});
 	$('body').on('click', '.n-list-title', function(){
+		$(this).addClass('done');
 		$(this).parent().parent().find('.n-list').removeClass('on');
 		$(this).parent().addClass('on');
 	});
 	$('body').on('click', '.n-list-BG, .n-list-close', function(){
 		$(this).parentsUntil('n-list').parent().removeClass('on');
 	});
-	$('body').on('click', '.n-progress.done', function(){
+	//开发时允许点击进度条进入未做过的页面
+	$('body').on('click', '.n-progress, .n-progress.done', function(){
 		var pageNum = $(this).attr('pageNum');
 		pageNum = parseInt(pageNum, 10);
 		openPage(pageNum);
 	});
 
 	// get JSON data for home page
-    $.get('api/courses.json', function(data) {
+    $.get('api/index.json', function(data) {
     	var startScreen = document.getElementById('start-screen'),
     		homeContent = '';
     	if (typeof data === 'object') {
@@ -481,7 +549,7 @@
 	    		lClass = 'l-' + lMod;
 	    		containerClass = 'n-home-course-container ' + sClass + ' ' + mClass + ' ' + lClass;
 	    		clearFloat = '<div class="clearfloat ' + sClass + ' ' + mClass + ' ' + lClass + '"></div>'; 
-	    		homeContent += '<a href="course/' + entry.id + '" title="' + entry.title + '" class="n-course-link"><div class="' + containerClass + '"><div class="' + innerClass + '" /*style="background-image: url(' +  entry.image + '?'+ entry.id + ')"*/><div class="n-home-course-title">' + entry.title + '</div></div></div></a>' + clearFloat;
+	    		homeContent += '<a course-id="course/' + entry.id + '" title="' + entry.title + '" class="n-course-link"><div class="' + containerClass + '"><div class="' + innerClass + '" /*style="background-image: url(' +  entry.image + '?'+ entry.id + ')"*/><div class="n-home-course-title">' + entry.title + '</div></div></div></a>' + clearFloat;
 		        startScreen.className = 'start-screen fadeOut animated running';
 	        });
 	        document.getElementById('home-content').innerHTML = homeContent;
