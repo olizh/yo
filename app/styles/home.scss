@@ -142,7 +142,7 @@ h3.n-page-title {
 	margin: $padding 0;
 	padding: $padding;
 }
-.n-list-title.done {
+.n-list.done .n-list-title {
 	background-size: 48px 48px;
 	background-position: right center;
 	background-image: url(../images/ic_check_24px.svg);	
@@ -162,9 +162,10 @@ h3.n-page-title {
 	background: $opaque;
 }
 .n-list-text-inner {
-	position: relative;
-	width:100%;
-	height:100%;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	bottom: $padding;
 }
 .n-list-text {
 	position: absolute;
@@ -193,6 +194,26 @@ h3.n-page-title {
 	background-image: url(../images/ic_close_24px.svg);	
 	background-repeat: no-repeat;
 	background-position: $padding center;
+}
+.n-list-prev, .n-list-next {
+	position: absolute;
+	bottom: 0;
+	height: $buttonHeight;
+	line-height: $buttonHeight;
+}
+.n-list-prev {
+	left: $padding;
+	padding-left: $padding * 2;
+	background-image: url(../images/ic_keyboard_arrow_left_24px.svg);	
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.n-list-next {
+	right: $padding;
+	padding-right: $padding * 2;
+	background-image: url(../images/ic_keyboard_arrow_right_24px.svg);	
+	background-repeat: no-repeat;
+	background-position: right center;
 }
 .n-list-text-content {
 	padding:$padding;
@@ -382,7 +403,9 @@ span.bad {
 	background-color: $placeHolderBG;
 	background-repeat: no-repeat;
 	overflow: hidden;
-	background-size: 100% auto;
+	background-size: cover;
+}
+.n-home-course-inner {
 	border-bottom: $gutterWidth solid $defaultBG;
 }
 .n-home-course-inner:after, .n-page-image-inner:after {
@@ -481,6 +504,9 @@ span.bad {
 	}
 	.n-list-title {
 		width: 45%;
+	}
+	.n-list.on.done .n-list-title {
+		background-image: none;
 	}
 	.on {
 		.n-list-title {

@@ -96,6 +96,14 @@
 			falseStatement: {
 				en: 'False',
 				ch: '错误'
+			},
+			prevItem: {
+				en: 'PREV',
+				ch: '上一个'
+			},
+			nextItem: {
+				en: 'NEXT',
+				ch: '下一个'
 			}
 		}
 	};
@@ -245,7 +253,7 @@
 			});
 			document.getElementById('n-course-intro-inner').innerHTML = courseHTML;
 			//add scroller to course intro page
-			if (typeof gCourseIntroScroller !=="object") {
+			if (typeof gCourseIntroScroller !== 'object') {
 		        gCourseIntroScroller = new FTScroller(document.getElementById('n-course-intro-container'), verticalScrollOpts);
 		    }
 		});
@@ -342,7 +350,7 @@
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
 					pageList = '';
 					$.each(entry.list, function(itemIndex, item) {
-						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title"><div class="n-list-close"></div>' + item.title + '</div><div class="n-list-text-content">' + item.text + '</div></div></div></div></div>';
+						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title"><div class="n-list-close"></div>' + item.title + '</div><div class="n-list-text-content">' + item.text + '</div><div class="n-list-prev">' + getCaption('prevItem') + '</div><div class="n-list-next">' + getCaption('nextItem') + '</div></div></div></div></div>';
 					});
 					pageList = '<div class="n-list-container">' + pageList + '</div>';
 					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageTitle + pageMain + pageList + '</div></div>';
@@ -399,6 +407,12 @@
 		} else {
 			courseStatus.nextSession = '';
 		}
+	}
+
+	function expandList(ele) {
+		ele.parent().addClass('done');
+		ele.parent().parent().find('.n-list').removeClass('on');
+		ele.parent().addClass('on');
 	}
 
 	function courseAction(action) {
@@ -509,9 +523,7 @@
 		courseStatus.buttonDisable = false;
 	});
 	$('body').on('click', '.n-list-title', function(){
-		$(this).addClass('done');
-		$(this).parent().parent().find('.n-list').removeClass('on');
-		$(this).parent().addClass('on');
+		expandList($(this));
 	});
 	$('body').on('click', '.n-list-BG, .n-list-close', function(){
 		$(this).parentsUntil('n-list').parent().removeClass('on');
