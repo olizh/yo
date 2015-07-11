@@ -305,6 +305,7 @@
 				var pageImage = '';
 				var isTrue = '';
 				var isFalse = '';
+				var listLength = 0;
 				pageExplain = entry.explain || '';
 				if (pageExplain !== '') {
 					pageExplain = '<div class="n-page-explain animated running fadeInLeft">' + pageExplain + '</div>';
@@ -349,8 +350,10 @@
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
 					pageList = '';
+					listLength = entry.list.length;
+					//console.log (listLength);
 					$.each(entry.list, function(itemIndex, item) {
-						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title"><div class="n-list-close"></div>' + item.title + '</div><div class="n-list-text-content">' + item.text + '</div><div class="n-list-prev">' + getCaption('prevItem') + '</div><div class="n-list-next">' + getCaption('nextItem') + '</div></div></div></div></div>';
+						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title" data-list-index=' + itemIndex + ' data-list-length=' + listLength + '><div class="n-list-prev"></div><div class="n-list-count">' + (itemIndex + 1) + '/' + listLength + '</div><div class="n-list-next"></div><div class="n-list-close"></div></div><div class="n-list-text-content"><div><b>' + item.title + '</b></div>' + item.text + '</div></div></div></div></div>';
 					});
 					pageList = '<div class="n-list-container">' + pageList + '</div>';
 					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageTitle + pageMain + pageList + '</div></div>';
@@ -526,7 +529,30 @@
 		expandList($(this));
 	});
 	$('body').on('click', '.n-list-BG, .n-list-close', function(){
-		$(this).parentsUntil('n-list').parent().removeClass('on');
+		$(this).parentsUntil('.n-list').parent().removeClass('on');
+	});
+	$('body').on('click', '.n-list-prev, .n-list-next', function(){
+		var listIndex = $(this).parent().attr('data-list-index') || -1;
+		var listLength = $(this).parent().attr('data-list-length') || 0;
+		var listClass = $(this).attr('class');
+		listIndex = parseInt(listIndex, 10);
+		listLength = parseInt(listLength, 10);
+		if (listIndex >= 0 && listLength > 0) {
+			//console.log (listIndex + '/' + listLength + ':' + listClass);
+			if (listClass === 'n-list-prev') {
+				listIndex = listIndex - 1;
+			} else {
+				listIndex = listIndex + 1;
+			}
+			if (listIndex === -1) {
+				listIndex = listLength -1; 
+			} else if (listIndex === listLength) {
+				listIndex = 0;
+			}
+			//console.log (listIndex);
+			//console.log ($(this).parentsUntil('.n-list').parent().html());
+			expandList($(this).parentsUntil('.n-list-container').parent().find('.n-list-title').eq(listIndex));
+		}
 	});
 	//开发时允许点击进度条进入未做过的页面
 	$('body').on('click', '.n-progress, .n-progress.done', function(){

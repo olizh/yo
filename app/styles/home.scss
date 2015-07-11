@@ -183,6 +183,7 @@ h3.n-page-title {
 	color: white;
 	padding:$padding;
 	position: relative;
+	height: $buttonHeight;
 }
 .n-list-close {
 	position: absolute;
@@ -195,26 +196,36 @@ h3.n-page-title {
 	background-repeat: no-repeat;
 	background-position: $padding center;
 }
-.n-list-prev, .n-list-next {
-	position: absolute;
-	bottom: 0;
-	height: $buttonHeight;
-	line-height: $buttonHeight;
-}
 .n-list-prev {
-	left: $padding;
-	padding-left: $padding * 2;
+	position: absolute;
+	height: $buttonHeight;
+	width: $buttonHeight;
+	left: 0;
+	top:0;
 	background-image: url(../images/ic_keyboard_arrow_left_24px.svg);	
 	background-repeat: no-repeat;
-	background-position: left center;
+	background-position: center center;
+}
+.n-list-count {
+	position: absolute;
+	height: $buttonHeight;
+	line-height: $buttonHeight;
+	width: $buttonHeight;
+	left: $buttonHeight;
+	top:0;
+	text-align: center;
 }
 .n-list-next {
-	right: $padding;
-	padding-right: $padding * 2;
+	position: absolute;
+	height: $buttonHeight;
+	width: $buttonHeight;
+	left: 2 * $buttonHeight;
+	top:0;
 	background-image: url(../images/ic_keyboard_arrow_right_24px.svg);	
 	background-repeat: no-repeat;
-	background-position: right center;
+	background-position: center center;
 }
+
 .n-list-text-content {
 	padding:$padding;
 }
