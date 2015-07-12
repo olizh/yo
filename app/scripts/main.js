@@ -1,7 +1,7 @@
 /* jshint devel:true */
 (function(){
 	'use strict';
-	var currentVersion = '0.0.2';
+	var currentVersion = '0.0.3';
 	var verticalScrollOpts = {
 	    scrollingX: false,
 	    bouncing: false,
@@ -277,7 +277,7 @@
 		    }
 		}).fail(
 			function () {
-				document.getElementById('n-course-intro-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>'
+				document.getElementById('n-course-intro-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>';
 			}
 		);
 	}
@@ -412,7 +412,7 @@
 			}
 		}).fail(
 			function () {
-				document.getElementById('n-course-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>'
+				document.getElementById('n-course-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>';
 			}
 		);
 	}
