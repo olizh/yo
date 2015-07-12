@@ -15,6 +15,8 @@
 
 	var gCourseIntroScroller;
 
+	var gSlideScrollers = [];
+
 	var courseStatus = {
 		action: 'next',
 		len: 0,
@@ -169,6 +171,10 @@
 		var scoreClass = '';
 		var points = '';
 		var progressBar = $('#n-progress-inner .n-progress');
+		var scrollerEle = currentPage.find('.n-overflow-scroll-y');
+		var scrollerEleInner = scrollerEle.find('.n-overflow-scroll-y-inner');
+		var scrollerHeight = 0;
+		var scrollerInnerHeight = 0;
 		progressBar.removeClass('on');
 		progressBar.slice(0, page).addClass('on done');
 		courseStatus.current = page;
@@ -229,6 +235,19 @@
 			courseStatus.action = 'next';
 		}
 		$('#n-header__close').removeClass('on');
+
+		//if there's overflowed content
+		//initialize FTScroller
+		if (scrollerEle.hasClass('ftscroller-on')=== false && scrollerEle.length>0 && scrollerEleInner.length>0) {
+			scrollerHeight = scrollerEle.innerHeight();
+			scrollerInnerHeight = scrollerEleInner.outerHeight();
+			console.log (scrollerEle.hasClass('n-overflow-scroll-force'));
+			if ((scrollerHeight < scrollerInnerHeight) || scrollerEle.hasClass('n-overflow-scroll-force') === true) {
+				console.log ('FTScroller Needed');
+				gSlideScrollers[page] = new FTScroller(scrollerEle.get(0), verticalScrollOpts);
+				scrollerEle.addClass('ftscroller-on');
+			}
+		}
 	}
 
 	function openCourse(courseId, courseTitle) {
@@ -263,6 +282,7 @@
 		var id = sessionId.replace(/^.*\/course\//g, '');
 		var apiUrl = 'api/courses/course' + courseStatus.courseId + '/session' + id + '.json';
 		courseStatus.page = 'session';
+		gSlideScrollers = []; //Clear all in-slide scrollers
 		document.getElementById('n-course-inner').innerHTML = '';
 		if (typeof sessionTitle !== undefined) {
 			document.getElementById('n-header-title').innerHTML = sessionTitle;
@@ -291,7 +311,7 @@
 			if (data.passMark && data.passMark !== '') {
 				courseStatus.passMark = parseInt(data.passMark, 10) || 60; 
 			}
-			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + '</div></div></div></div></div>';
+			courseHTML = '<div class="n-page n-page-start n-page-on"><div class="n-page-inner n-overflow-scroll-y"><div class="n-card-container n-overflow-scroll-y-inner"><div class="n-card-inner">' + courseImage + '<h1 class="n-page-title">' + data.title + '</h1><div class="n-page-lead">' + data.lead + '</div></div></div></div></div>';
 			courseStatus.len += 1;
 			$.each(data.content, function(entryIndex, entry) {
 				var pageTitle = '';
@@ -330,7 +350,7 @@
 						pageOption += item;
 					});
 					pageOption = '<div class="n-option-container">' + pageOption + '</div>'; 
-					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div>';
+					courseHTML += '<div class="n-page n-page-quiz"><div class="n-page-inner n-overflow-scroll-y"><div class="n-overflow-scroll-y-inner">' + pageTitle + pageMain + pageOption + pagePoint + pageExplain + '</div></div></div>';
 				} else if (entry.pageType === 'trueOrFalse') {
 					isTrue = '';
 					isFalse = '';
@@ -353,24 +373,24 @@
 					listLength = entry.list.length;
 					//console.log (listLength);
 					$.each(entry.list, function(itemIndex, item) {
-						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner"><div class="n-list-BG"></div><div class="n-list-text"><div class="n-list-text-title" data-list-index=' + itemIndex + ' data-list-length=' + listLength + '><div class="n-list-prev"></div><div class="n-list-count">' + (itemIndex + 1) + '/' + listLength + '</div><div class="n-list-next"></div><div class="n-list-close"></div></div><div class="n-list-text-content"><div><b>' + item.title + '</b></div>' + item.text + '</div></div></div></div></div>';
+						pageList += '<div class="n-list"><div class="n-list-title">' + item.title + '</div><div class="n-list-text-container animated running fadeIn"><div class="n-list-text-inner">' + item.text + '</div></div></div>';
 					});
 					pageList = '<div class="n-list-container">' + pageList + '</div>';
-					courseHTML += '<div class="n-page"><div class="n-page-inner">' + pageTitle + pageMain + pageList + '</div></div>';
+					courseHTML += '<div class="n-page"><div class="n-page-inner n-overflow-scroll-y n-overflow-scroll-force"><div class="n-overflow-scroll-y-inner">' + pageTitle + pageMain + pageList + '</div></div></div>';
 				} else if (entry.pageType === 'image-text') {
 					pageTitle = '<h3 class="n-page-title">' + entry.title + '</h3>';
 					pageMain = '<div class="n-page-lead">' + entry.text + '</div>';
 					if (entry.image && entry.image !== '') {
 						pageImage = '<div class="n-home-course-container"><div class="n-home-course-inner" style="background-image: url(' + entry.image + ')"></div></div>';
 					} 
-					courseHTML += '<div class="n-page"><div class="n-page-inner"><div class="n-card-container"><div class="n-card-inner">' + pageImage + pageTitle + pageMain + '</div></div></div></div>';
+					courseHTML += '<div class="n-page"><div class="n-page-inner n-overflow-scroll-y"><div class="n-card-container n-overflow-scroll-y-inner"><div class="n-card-inner">' + pageImage + pageTitle + pageMain + '</div></div></div></div>';
 				}
 				courseStatus.fullScore += pageValue;
 				courseStatus.len += 1;
 				// course progress bar
 				progressHTML += '<div class="n-progress" pageNum=' + entryIndex + '></div>';
 			});
-			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div>';
+			courseHTML += '<div class="n-page n-page-last"><div class="n-page-inner n-overflow-scroll-y"><div class="n-overflow-scroll-y-inner"><h3 class="n-page-title"></h3><div class="n-page-lead"></div></div></div></div>';
 			progressHTML += '<div class="n-progress" pageNum=' + (courseStatus.len -1) + '></div>';
 			courseStatus.len += 1;
 			document.getElementById('n-course-inner').innerHTML = courseHTML;
@@ -416,6 +436,8 @@
 		ele.parent().addClass('done');
 		ele.parent().parent().find('.n-list').removeClass('on');
 		ele.parent().addClass('on');
+		//add a space to force FTScroller updateonchanges
+		ele.append(' ');
 	}
 
 	function courseAction(action) {
@@ -591,7 +613,6 @@
 		        startScreen.className = 'start-screen fadeOut animated running';
 	        });
 	        document.getElementById('home-content').innerHTML = homeContent;
-		    // Fast Click
 			var scroller = new FTScroller(document.getElementById('home-content-scroller'), verticalScrollOpts);
 	        setTimeout (function(){
 	        	startScreen.parentNode.removeChild(startScreen);
