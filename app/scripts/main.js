@@ -550,32 +550,6 @@
 	$('body').on('click', '.n-list-title', function(){
 		expandList($(this));
 	});
-	$('body').on('click', '.n-list-BG, .n-list-close', function(){
-		$(this).parentsUntil('.n-list').parent().removeClass('on');
-	});
-	$('body').on('click', '.n-list-prev, .n-list-next', function(){
-		var listIndex = $(this).parent().attr('data-list-index') || -1;
-		var listLength = $(this).parent().attr('data-list-length') || 0;
-		var listClass = $(this).attr('class');
-		listIndex = parseInt(listIndex, 10);
-		listLength = parseInt(listLength, 10);
-		if (listIndex >= 0 && listLength > 0) {
-			//console.log (listIndex + '/' + listLength + ':' + listClass);
-			if (listClass === 'n-list-prev') {
-				listIndex = listIndex - 1;
-			} else {
-				listIndex = listIndex + 1;
-			}
-			if (listIndex === -1) {
-				listIndex = listLength -1; 
-			} else if (listIndex === listLength) {
-				listIndex = 0;
-			}
-			//console.log (listIndex);
-			//console.log ($(this).parentsUntil('.n-list').parent().html());
-			expandList($(this).parentsUntil('.n-list-container').parent().find('.n-list-title').eq(listIndex));
-		}
-	});
 	//开发时允许点击进度条进入未做过的页面
 	$('body').on('click', '.n-progress, .n-progress.done', function(){
 		var pageNum = $(this).attr('pageNum');
@@ -621,5 +595,10 @@
     });
 
 	document.getElementById('n-header-title').innerHTML = getCaption('appTitle'); 
-	document.getElementById('n-header__back').innerHTML = getCaption('back'); 
+	document.getElementById('n-header__back').innerHTML = getCaption('back');
+
+	//prevent default scrolling
+	document.addEventListener('touchmove', function(event){
+		event.preventDefault();
+	});
 })(); 
