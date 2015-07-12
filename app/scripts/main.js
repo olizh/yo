@@ -1,7 +1,7 @@
 /* jshint devel:true */
 (function(){
 	'use strict';
-
+	var currentVersion = '0.0.2';
 	var verticalScrollOpts = {
 	    scrollingX: false,
 	    bouncing: false,
@@ -13,7 +13,7 @@
 	    windowScrollingActiveFlag: 'gFTScrollerActive'
 	};
 
-	var gCourseIntroScroller;
+	var gCourseIntroScroller, gHomePageScroller;
 
 	var gSlideScrollers = [];
 
@@ -241,9 +241,9 @@
 		if (scrollerEle.hasClass('ftscroller-on')=== false && scrollerEle.length>0 && scrollerEleInner.length>0) {
 			scrollerHeight = scrollerEle.innerHeight();
 			scrollerInnerHeight = scrollerEleInner.outerHeight();
-			console.log (scrollerEle.hasClass('n-overflow-scroll-force'));
+			//console.log (scrollerEle.hasClass('n-overflow-scroll-force'));
 			if ((scrollerHeight < scrollerInnerHeight) || scrollerEle.hasClass('n-overflow-scroll-force') === true) {
-				console.log ('FTScroller Needed');
+				//console.log ('FTScroller Needed');
 				gSlideScrollers[page] = new FTScroller(scrollerEle.get(0), verticalScrollOpts);
 				scrollerEle.addClass('ftscroller-on');
 			}
@@ -256,7 +256,7 @@
 		courseStatus.page = 'course';
 		courseStatus.courseId = id;
 		courseStatus.courseTitle = courseTitle; 
-		document.getElementById('n-course-intro-inner').innerHTML = '';
+		document.getElementById('n-course-intro-inner').innerHTML = '<div class="n-loading">加载中...</div>';
 		if (typeof courseTitle !== undefined) {
 			document.getElementById('n-header-title').innerHTML = courseTitle;
 		}
@@ -275,7 +275,11 @@
 			if (typeof gCourseIntroScroller !== 'object') {
 		        gCourseIntroScroller = new FTScroller(document.getElementById('n-course-intro-container'), verticalScrollOpts);
 		    }
-		});
+		}).fail(
+			function () {
+				document.getElementById('n-course-intro-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>'
+			}
+		);
 	}
 
 	function openSession(sessionId, sessionTitle) {
@@ -283,7 +287,7 @@
 		var apiUrl = 'api/courses/course' + courseStatus.courseId + '/session' + id + '.json';
 		courseStatus.page = 'session';
 		gSlideScrollers = []; //Clear all in-slide scrollers
-		document.getElementById('n-course-inner').innerHTML = '';
+		document.getElementById('n-course-inner').innerHTML = '<div class="spinner"><div class="dot1"></div><div class="dot2"></div></div>';
 		if (typeof sessionTitle !== undefined) {
 			document.getElementById('n-header-title').innerHTML = sessionTitle;
 		}
@@ -406,7 +410,11 @@
 					getNextSession(data, id);
 				});
 			}
-		});
+		}).fail(
+			function () {
+				document.getElementById('n-course-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>'
+			}
+		);
 	}
 
 	function getNextSession (data, id) {
@@ -556,6 +564,25 @@
 		pageNum = parseInt(pageNum, 10);
 		openPage(pageNum);
 	});
+	//点击顶部横条滚动到顶部需要原生程序配合
+	//目前，先设定为点击顶部标题滚动到顶部
+	$('body').on('click', '#n-header-title', function(e) {
+		//document.getElementById('n-header-title').innerHTML = e.clientY;
+		if (e.clientY >= 0 && e.clientY <= 100) {
+			if (courseStatus.page === '') {
+				//console.log (typeof scroller);
+				gHomePageScroller.scrollTo(0,0,500);
+			} else if (courseStatus.page === 'course') {
+				gCourseIntroScroller.scrollTo(0,0,500);
+			} else if (courseStatus.page === 'session') {
+				//console.log (courseStatus.current);
+				if (typeof gSlideScrollers[courseStatus.current] === 'object') {
+					gSlideScrollers[courseStatus.current].scrollTo(0,0,500);
+				}
+			}
+		}
+	});
+
 
 	// get JSON data for home page
     $.get('api/index.json', function(data) {
@@ -586,8 +613,9 @@
 	    		homeContent += '<a course-id="course/' + entry.id + '" title="' + entry.title + '" class="n-course-link"><div class="' + containerClass + '"><div class="' + innerClass + '" /*style="background-image: url(' +  entry.image + '?'+ entry.id + ')"*/><div class="n-home-course-title">' + entry.title + '</div></div></div></a>' + clearFloat;
 		        startScreen.className = 'start-screen fadeOut animated running';
 	        });
+			homeContent += '<div class="n-version">版本号：' + currentVersion + '</div>';
 	        document.getElementById('home-content').innerHTML = homeContent;
-			var scroller = new FTScroller(document.getElementById('home-content-scroller'), verticalScrollOpts);
+			gHomePageScroller = new FTScroller(document.getElementById('home-content-scroller'), verticalScrollOpts);
 	        setTimeout (function(){
 	        	startScreen.parentNode.removeChild(startScreen);
 	        },1000);

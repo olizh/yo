@@ -28,6 +28,18 @@
 .n-content-container {
 	@include transform(translate3d(0, 0, 0));
 }
+.n-version {
+	height: 60px;
+	line-height: 60px;
+	text-align: right;
+	padding: 0 $padding;
+	color: $selectedBG;
+}
+.n-loading {
+	padding: 4 * $padding $padding 0 $padding;
+	text-align: center;
+	color: $selectedBG;
+}
 
 // in the course
 .n-in-course {
