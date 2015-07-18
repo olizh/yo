@@ -12,7 +12,6 @@
 	    updateOnWindowResize: true,
 	    windowScrollingActiveFlag: 'gFTScrollerActive'
 	};
-
 	var gCourseIntroScroller, gHomePageScroller;
 
 	var gSlideScrollers = [];
@@ -33,6 +32,7 @@
 		page: '',
 		courseTitle: '',
 		courseId: '',
+		hasSingleSession: false,
 		courseIntro: {}
 	};
 
@@ -141,7 +141,7 @@
 	}
 
 	function closeButton() {
-		if (courseStatus.page === 'session') { 
+		if (courseStatus.page === 'session' && courseStatus.hasSingleSession === false) { 
 			courseStatus.page = 'course';
 			courseStatus.current = 0;
 			document.body.className = 'n-in-course-intro';
@@ -253,6 +253,8 @@
 	function openCourse(courseId, courseTitle) {
 		var id = courseId.replace(/^.*course\//g, '');
 		var apiUrl = 'api/courses/course' + id + '/index.json';
+		var chapterCount = 0;
+		courseStatus.hasSingleSession = false;
 		courseStatus.page = 'course';
 		courseStatus.courseId = id;
 		courseStatus.courseTitle = courseTitle; 
@@ -264,17 +266,30 @@
 		$.get(apiUrl, function(data) {
 			var courseHTML = '';
 			courseStatus.courseIntro = data;
-			$.each(data.content, function(entryIndex, entry) {
-				courseHTML += '<div class="n-chapter-title">' + entry.title + '</div>';
-				$.each(entry.sessions, function(sessionIndex, session) {
-					courseHTML += '<div session-id="' + session.id + '" class="n-session-title">' + session.title + '</div>';
+			chapterCount = data.content.length;
+			if (chapterCount === 1) {
+				if (data.content[0].sessions.length === 1) {
+					courseStatus.hasSingleSession = true;
+				}
+			}
+			if (courseStatus.hasSingleSession === false) {
+				$.each(data.content, function(entryIndex, entry) {
+					courseHTML += '<div class="n-chapter-title">' + entry.title + '</div>';
+					$.each(entry.sessions, function(sessionIndex, session) {
+						courseHTML += '<div session-id="' + session.id + '" class="n-session-title">' + session.title + '</div>';
+					});
 				});
-			});
-			document.getElementById('n-course-intro-inner').innerHTML = courseHTML;
-			//add scroller to course intro page
-			if (typeof gCourseIntroScroller !== 'object') {
-		        gCourseIntroScroller = new FTScroller(document.getElementById('n-course-intro-container'), verticalScrollOpts);
-		    }
+				document.getElementById('n-course-intro-inner').innerHTML = courseHTML;
+				//add scroller to course intro page
+				if (typeof gCourseIntroScroller !== 'object') {
+			        gCourseIntroScroller = new FTScroller(document.getElementById('n-course-intro-container'), verticalScrollOpts);
+			    }
+			} else {
+				//if there's only on session in the Course
+				//open the session directly
+				//no need to see the course introduction
+				openSession(data.content[0].sessions[0].id, data.content[0].sessions[0].title);
+			}
 		}).fail(
 			function () {
 				document.getElementById('n-course-intro-inner').innerHTML = '<div class="n-loading">加载失败，可能是我们的服务器不给力，也可能是您的网络不给力。</div>';
