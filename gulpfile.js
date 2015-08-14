@@ -75,7 +75,7 @@ function postDatatoFile (urlSource, postData, fileName) {
 }
 
 gulp.task('styles', function () {
-  return gulp.src('app/styles/main.scss')
+  return gulp.src('app/styles/main*.scss')
     .pipe($.plumber())
     .pipe($.rubySass({
       style: 'expanded',
